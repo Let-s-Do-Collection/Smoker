@@ -4,14 +4,12 @@ import dev.architectury.registry.registries.DeferredRegister;
 import dev.architectury.registry.registries.Registrar;
 import dev.architectury.registry.registries.RegistrySupplier;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.satisfy.smoker.Smoker;
-import net.satisfy.smoker.core.block.SmokingFoodBlock;
+import net.satisfy.smoker.core.world.block.SmokingFoodBlock;
 import net.satisfy.smoker.core.util.GeneralUtil;
 import net.satisfy.smoker.core.util.SmokerIdentifier;
 
