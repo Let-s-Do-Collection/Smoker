@@ -1,0 +1,12 @@
+{
+  "type": "smoker:smoker_modifier",
+  "material": "minecraft:oak_planks",
+  "modifiers": {
+    "saturation": 0.15,
+    "nutrition": 0.075,
+    "gives_effect": true,
+    "effect_id": "minecraft:hunger",
+    "effect_duration": 600
+  },
+  "crafting_time": 200
+}
