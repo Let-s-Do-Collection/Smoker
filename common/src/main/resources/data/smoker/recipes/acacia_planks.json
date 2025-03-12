@@ -1,0 +1,10 @@
+{
+  "type": "smoker:smoker_modifier",
+  "material": "minecraft:acacia_planks",
+  "modifiers": {
+    "heal_amount": 2,
+    "saturation": 0.0,
+    "nutrition": 0.0
+  },
+  "crafting_time": 40
+}

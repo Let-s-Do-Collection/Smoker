@@ -1,14 +1,10 @@
 package net.satisfy.smoker.core.mixin;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.SmokerBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityTicker;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.satisfy.smoker.core.registry.EntityTypeRegistry;
-import net.satisfy.smoker.core.world.block.entity.ImprovedSmokerBlockEntity;
+import net.satisfy.smoker.core.world.level.block.entity.ImprovedSmokerBlockEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;

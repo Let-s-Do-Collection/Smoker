@@ -1,0 +1,11 @@
+{
+  "type": "smoker:smoker_modifier",
+  "material": "minecraft:jungle_planks",
+  "modifiers": {
+    "saturation": 0.0,
+    "nutrition": 0.0,
+    "effect": "minecraft:regeneration",
+    "effect_duration": 160
+  },
+  "crafting_time": 40
+}

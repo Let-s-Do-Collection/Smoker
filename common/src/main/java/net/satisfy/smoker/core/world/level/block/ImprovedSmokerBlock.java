@@ -1,4 +1,4 @@
-package net.satisfy.smoker.core.world.block;
+package net.satisfy.smoker.core.world.level.block;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.Containers;
@@ -19,7 +19,7 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.phys.BlockHitResult;
-import net.satisfy.smoker.core.world.block.entity.ImprovedSmokerBlockEntity;
+import net.satisfy.smoker.core.world.level.block.entity.ImprovedSmokerBlockEntity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

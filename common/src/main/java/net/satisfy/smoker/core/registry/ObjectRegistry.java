@@ -10,7 +10,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.satisfy.smoker.Smoker;
-import net.satisfy.smoker.core.world.block.ImprovedSmokerBlock;
+import net.satisfy.smoker.core.world.level.block.ImprovedSmokerBlock;
 import net.satisfy.smoker.core.util.SmokerIdentifier;
 
 import java.util.function.Supplier;

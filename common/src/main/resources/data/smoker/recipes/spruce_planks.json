@@ -1,0 +1,9 @@
+{
+  "type": "smoker:smoker_modifier",
+  "material": "minecraft:spruce_planks",
+  "modifiers": {
+    "saturation": 0.08,
+    "nutrition": 0.02
+  },
+  "crafting_time": 40
+}

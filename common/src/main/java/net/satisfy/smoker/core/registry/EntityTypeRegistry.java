@@ -6,7 +6,7 @@ import dev.architectury.registry.registries.RegistrySupplier;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.satisfy.smoker.Smoker;
-import net.satisfy.smoker.core.world.block.entity.ImprovedSmokerBlockEntity;
+import net.satisfy.smoker.core.world.level.block.entity.ImprovedSmokerBlockEntity;
 import net.satisfy.smoker.core.util.SmokerIdentifier;
 
 import java.util.function.Supplier;

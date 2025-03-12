@@ -1,6 +1,6 @@
 {
   "type": "smoker:smoker_modifier",
-  "material": "minecraft:birch_planks",
+  "material": "minecraft:mangrove_planks",
   "modifiers": {
     "saturation": 0.06,
     "nutrition": 0.04

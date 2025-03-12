@@ -1,0 +1,11 @@
+{
+  "type": "smoker:smoker_modifier",
+  "material": "minecraft:crimson_planks",
+  "modifiers": {
+    "saturation": 0.02,
+    "nutrition": 0.02,
+    "effect": "minecraft:fire_resistance",
+    "effect_duration": 400
+  },
+  "crafting_time": 40
+}

@@ -23,15 +23,19 @@ public class SmokerModifierRecipe implements Recipe<Container> {
     private final double saturation;
     private final double nutrition;
     private final int craftingTime;
-    private final int healAmount; 
+    private final int healAmount;
+    private final String effectName;
+    private final int effectDuration;
 
-    public SmokerModifierRecipe(ResourceLocation id, Ingredient fuel, double saturation, double nutrition, int craftingTime, int healAmount) {
+    public SmokerModifierRecipe(ResourceLocation id, Ingredient fuel, double saturation, double nutrition, int craftingTime, int healAmount, String effectName, int effectDuration) {
         this.id = id;
         this.fuel = fuel;
         this.saturation = saturation;
         this.nutrition = nutrition;
         this.craftingTime = craftingTime;
         this.healAmount = healAmount;
+        this.effectName = effectName;
+        this.effectDuration = effectDuration;
     }
 
     @Override
@@ -49,7 +53,13 @@ public class SmokerModifierRecipe implements Recipe<Container> {
         CompoundTag tag = result.getOrCreateTag();
         tag.putDouble("smoker_saturation", getSaturation());
         tag.putDouble("smoker_nutrition", getNutrition());
-        tag.putInt("smoker_heal_amount", getHealAmount()); 
+        tag.putInt("smoker_heal_amount", getHealAmount());
+
+        if (hasEffect()) {
+            tag.putString("smoker_effect", getEffectName());
+            tag.putInt("smoker_effect_duration", getEffectDuration());
+        }
+
         return result;
     }
 
@@ -94,6 +104,18 @@ public class SmokerModifierRecipe implements Recipe<Container> {
         return healAmount;
     }
 
+    public boolean hasEffect() {
+        return !effectName.isEmpty();
+    }
+
+    public String getEffectName() {
+        return effectName;
+    }
+
+    public int getEffectDuration() {
+        return effectDuration;
+    }
+
     public static class Serializer implements RecipeSerializer<SmokerModifierRecipe> {
         @Override
         public @NotNull SmokerModifierRecipe fromJson(ResourceLocation id, JsonObject json) {
@@ -103,9 +125,11 @@ public class SmokerModifierRecipe implements Recipe<Container> {
             double saturation = GsonHelper.getAsDouble(mod, "saturation");
             double nutrition = GsonHelper.getAsDouble(mod, "nutrition");
             int craftingTime = GsonHelper.getAsInt(json, "crafting_time");
-            int healAmount = GsonHelper.getAsInt(mod, "heal_amount", 0); 
+            int healAmount = GsonHelper.getAsInt(mod, "heal_amount", 0);
+            String effectName = mod.has("effect") ? GsonHelper.getAsString(mod, "effect") : "";
+            int effectDuration = mod.has("effect_duration") ? GsonHelper.getAsInt(mod, "effect_duration") : 0;
 
-            return new SmokerModifierRecipe(id, fuel, saturation, nutrition, craftingTime, healAmount);
+            return new SmokerModifierRecipe(id, fuel, saturation, nutrition, craftingTime, healAmount, effectName, effectDuration);
         }
 
         @Override
@@ -115,7 +139,10 @@ public class SmokerModifierRecipe implements Recipe<Container> {
             double nutrition = buf.readDouble();
             int craftingTime = buf.readVarInt();
             int healAmount = buf.readVarInt();
-            return new SmokerModifierRecipe(id, fuel, saturation, nutrition, craftingTime, healAmount);
+            String effectName = buf.readUtf();
+            int effectDuration = buf.readVarInt();
+
+            return new SmokerModifierRecipe(id, fuel, saturation, nutrition, craftingTime, healAmount, effectName, effectDuration);
         }
 
         @Override
@@ -125,6 +152,8 @@ public class SmokerModifierRecipe implements Recipe<Container> {
             buf.writeDouble(recipe.nutrition);
             buf.writeVarInt(recipe.craftingTime);
             buf.writeVarInt(recipe.healAmount);
+            buf.writeUtf(recipe.effectName);
+            buf.writeVarInt(recipe.effectDuration);
         }
     }
 }

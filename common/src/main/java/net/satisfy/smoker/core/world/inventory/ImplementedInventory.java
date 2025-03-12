@@ -1,4 +1,4 @@
-package net.satisfy.smoker.core.world;
+package net.satisfy.smoker.core.world.inventory;
 
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;

@@ -1,0 +1,9 @@
+{
+  "type": "smoker:smoker_modifier",
+  "material": "minecraft:cherry_planks",
+  "modifiers": {
+    "saturation": 0.02,
+    "nutrition": 0.08
+  },
+  "crafting_time": 40
+}

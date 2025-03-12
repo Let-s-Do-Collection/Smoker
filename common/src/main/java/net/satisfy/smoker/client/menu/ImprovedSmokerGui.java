@@ -1,13 +1,12 @@
 package net.satisfy.smoker.client.menu;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.item.ItemStack;
 import net.satisfy.smoker.core.util.SmokerIdentifier;
-import org.joml.Vector2i;
 
 public class ImprovedSmokerGui extends AbstractContainerScreen<ImprovedSmokerGuiHandler> {
     public static final ResourceLocation BG = new SmokerIdentifier("textures/gui/improved_smoker.png");
@@ -32,20 +31,40 @@ public class ImprovedSmokerGui extends AbstractContainerScreen<ImprovedSmokerGui
 
     @Override
     protected void renderBg(GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
-        RenderSystem.setShaderTexture(0, BG);
         guiGraphics.blit(BG, leftPos, topPos, 0, 0, imageWidth, imageHeight);
         renderProgressArrow(guiGraphics);
-        renderBurnIcon(guiGraphics);
+        renderBurnIcon(guiGraphics, mouseX, mouseY);
     }
 
-    protected void renderBurnIcon(GuiGraphics guiGraphics) {
+    protected void renderBurnIcon(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         int burnHeight = menu.getFuelProgress();
+        int fuelSlotIndex = 2;
+        ItemStack fuelStack = menu.getSlot(fuelSlotIndex).getItem();
+
+        int burnIconX = leftPos + 56;
+        int burnIconY = topPos + 36 + (14 - burnHeight);
+
         if (burnHeight > 0) {
-            Vector2i screenPos = new Vector2i(leftPos + 56, topPos + 36 + (14 - burnHeight));
-            Vector2i texPos = new Vector2i(176, 14 - burnHeight);
-            guiGraphics.blit(BG, screenPos.x(), screenPos.y(), texPos.x(), texPos.y(), 14, burnHeight);
+            guiGraphics.blit(BG, burnIconX, burnIconY, 176, 14 - burnHeight, 14, burnHeight);
+        }
+
+        if (isMouseOverBurnIcon(mouseX, mouseY) && !fuelStack.isEmpty()) {
+            Component tooltip = getFuelTooltip(fuelStack);
+            guiGraphics.renderTooltip(this.font, tooltip, mouseX, mouseY);
         }
     }
+
+    private boolean isMouseOverBurnIcon(int mouseX, int mouseY) {
+        int burnIconX = leftPos + 56;
+        int burnIconY = topPos + 36;
+        return mouseX >= burnIconX && mouseX <= burnIconX + 14 &&
+                mouseY >= burnIconY && mouseY <= burnIconY + 14;
+    }
+
+    private Component getFuelTooltip(ItemStack fuelStack) {
+        return Component.translatable("tooltip.smoker.block.current_smoking_wood", fuelStack.getHoverName());
+    }
+
 
     protected void renderProgressArrow(GuiGraphics guiGraphics) {
         int progressX = menu.getSmokeXProgress();

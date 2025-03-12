@@ -2,5 +2,8 @@
   "block.smoker.improved_smoker": "Improved Smoker",
   "tooltip.smoker.item.processed": "Smoked:",
   "tooltip.smoker.item.saturation": "Saturation",
-  "tooltip.smoker.item.nutrition": "Nutrition"
+  "tooltip.smoker.item.nutrition": "Nutrition",
+  "tooltip.smoker.item.heal": "Healing",
+  "tooltip.smoker.item.effect": "Effect",
+  "tooltip.smoker.block.current_smoking_wood": "Current Smoking Wood: %s"
 }

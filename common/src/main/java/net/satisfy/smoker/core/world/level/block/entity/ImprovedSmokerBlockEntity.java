@@ -1,4 +1,4 @@
-package net.satisfy.smoker.core.world.block.entity;
+package net.satisfy.smoker.core.world.level.block.entity;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -24,7 +24,7 @@ import net.satisfy.smoker.core.recipe.SmokerModifierRecipe;
 import net.satisfy.smoker.core.registry.EntityTypeRegistry;
 import net.satisfy.smoker.core.registry.ObjectRegistry;
 import net.satisfy.smoker.core.registry.RecipeTypeRegistry;
-import net.satisfy.smoker.core.world.ImplementedInventory;
+import net.satisfy.smoker.core.world.inventory.ImplementedInventory;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -92,27 +92,33 @@ public class ImprovedSmokerBlockEntity extends BlockEntity implements Implemente
     public void tick(Level world, BlockPos pos, BlockState state, ImprovedSmokerBlockEntity blockEntity) {
         if (world.isClientSide) return;
         boolean dirty = false;
+
         if (fuelTime > 0) {
             fuelTime--;
         }
+
         if (fuelTime == 0 && !getItem(FUEL_SLOT).isEmpty()) {
             SimpleContainer container = new SimpleContainer(getItem(FUEL_SLOT));
             currentRecipe = world.getRecipeManager().getRecipeFor(RecipeTypeRegistry.SMOKER_RECIPE_TYPE.get(), container, world).orElse(null);
+
             if (currentRecipe != null) {
                 fuelTime = PLANKS_FUEL_TIME;
                 getItem(FUEL_SLOT).shrink(1);
                 dirty = true;
             } else if (Ingredient.of(ItemTags.PLANKS).test(getItem(FUEL_SLOT))) {
                 fuelTime = PLANKS_FUEL_TIME;
+                getItem(FUEL_SLOT).shrink(1);
                 dirty = true;
             }
         }
+
         if (fuelTime > 0) {
             if (currentRecipe != null && getItem(INPUT_SLOT).isEdible()) {
                 if (smokingTime == 0) {
                     totalSmokingTime = currentRecipe.getCraftingTime();
                 }
                 smokingTime++;
+
                 if (smokingTime >= totalSmokingTime) {
                     smokingTime = 0;
                     processInput(currentRecipe);
@@ -124,6 +130,7 @@ public class ImprovedSmokerBlockEntity extends BlockEntity implements Implemente
                     totalSmokingTime = 200;
                 }
                 smokingTime++;
+
                 if (smokingTime >= totalSmokingTime) {
                     smokingTime = 0;
                     processFuelDefault();
@@ -133,31 +140,35 @@ public class ImprovedSmokerBlockEntity extends BlockEntity implements Implemente
         } else {
             smokingTime = 0;
         }
+
         if (dirty) {
             setChanged();
         }
     }
 
     private void processFuelDefault() {
-        ItemStack fuelStack = getItem(FUEL_SLOT);
-        if (fuelStack.isEmpty()) return;
-        ItemStack output = fuelStack.copy();
-        output.setCount(1);
-        output.getOrCreateTag().putDouble("smoker_saturation", 0.05);
-        output.getOrCreateTag().putDouble("smoker_nutrition", 0.05);
-        output.getOrCreateTag().putBoolean("SmokerProcessed", true);
+        ItemStack inputStack = getItem(INPUT_SLOT);
+        if (inputStack.isEmpty()) return;
+
+        ItemStack output = new ItemStack(inputStack.getItem(), 1);
+        CompoundTag tag = output.getOrCreateTag();
+        tag.putDouble("smoker_saturation", 0.05);
+        tag.putDouble("smoker_nutrition", 0.05);
+        tag.putBoolean("SmokerProcessed", true);
 
         ItemStack currentOutput = getItem(OUTPUT_SLOT);
-        if (ItemStack.isSameItemSameTags(currentOutput, output)) {
-            currentOutput.grow(1);
-        } else {
+        if (currentOutput.isEmpty()) {
             setItem(OUTPUT_SLOT, output);
+        } else if (ItemStack.isSameItemSameTags(currentOutput, output)) {
+            currentOutput.grow(1);
         }
 
-        fuelStack.shrink(1);
-        if (fuelStack.isEmpty()) {
-            setItem(FUEL_SLOT, ItemStack.EMPTY);
+        inputStack.shrink(1);
+        if (inputStack.isEmpty()) {
+            setItem(INPUT_SLOT, ItemStack.EMPTY);
         }
+
+        setChanged();
     }
 
     private void processInput(SmokerModifierRecipe recipe) {
@@ -167,9 +178,22 @@ public class ImprovedSmokerBlockEntity extends BlockEntity implements Implemente
         ItemStack output = input.copy();
         output.setCount(1);
         CompoundTag tag = output.getOrCreateTag();
-        tag.putDouble("smoker_saturation", recipe.getSaturation());
-        tag.putDouble("smoker_nutrition", recipe.getNutrition());
-        tag.putInt("smoker_heal_amount", recipe.getHealAmount());
+        if (recipe.getSaturation() > 0.0) {
+            tag.putDouble("smoker_saturation", recipe.getSaturation());
+        }
+
+        if (recipe.getNutrition() > 0.0) {
+            tag.putDouble("smoker_nutrition", recipe.getNutrition());
+        }
+
+        if (recipe.getHealAmount() > 0) {
+            tag.putInt("smoker_heal_amount", recipe.getHealAmount());
+        }
+
+        if (recipe.hasEffect()) {
+            tag.putString("smoker_effect", recipe.getEffectName());
+            tag.putInt("smoker_effect_duration", recipe.getEffectDuration());
+        }
 
         ItemStack currentOutput = getItem(OUTPUT_SLOT);
         if (ItemStack.isSameItemSameTags(currentOutput, output)) {
