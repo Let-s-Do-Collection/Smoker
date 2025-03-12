@@ -99,9 +99,9 @@ public class ImprovedSmokerMenu extends AbstractContainerMenu {
         return originalStack;
     }
 
-    public int getFuelProgress() {
-        int fuel = this.propertyDelegate.get(2);
-        return fuel * 14 / 100;
+    public int getSmokingProgress() {
+        int smoking = this.propertyDelegate.get(2);
+        return smoking * 14 / 100;
     }
 
     public int getRemainingSmokeTime() {

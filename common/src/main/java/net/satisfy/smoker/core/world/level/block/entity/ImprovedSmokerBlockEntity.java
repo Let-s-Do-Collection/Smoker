@@ -31,9 +31,9 @@ public class ImprovedSmokerBlockEntity extends BlockEntity implements Implemente
     public static final int CAPACITY = 3;
     private static final int OUTPUT_SLOT = 0;
     private static final int INPUT_SLOT = 1;
-    private static final int FUEL_SLOT = 2;
-    private static final int PLANKS_FUEL_TIME = 200;
-    private int fuelTime = 0;
+    private static final int SMOKINGMATERIAL_SLOT = 2;
+    private static final int MATERIAL_BURN_TIME = 200;
+    private int burnTime = 0;
     private int smokingTime = 0;
     private int totalSmokingTime = 0;
 
@@ -45,7 +45,7 @@ public class ImprovedSmokerBlockEntity extends BlockEntity implements Implemente
             return switch (index) {
                 case 0 -> smokingTime;
                 case 1 -> totalSmokingTime;
-                case 2 -> fuelTime;
+                case 2 -> burnTime;
                 default -> 0;
             };
         }
@@ -54,7 +54,7 @@ public class ImprovedSmokerBlockEntity extends BlockEntity implements Implemente
             switch (index) {
                 case 0 -> smokingTime = value;
                 case 1 -> totalSmokingTime = value;
-                case 2 -> fuelTime = value;
+                case 2 -> burnTime = value;
             }
         }
         @Override
@@ -75,7 +75,7 @@ public class ImprovedSmokerBlockEntity extends BlockEntity implements Implemente
         ContainerHelper.loadAllItems(nbt, this.inventory);
         smokingTime = nbt.getInt("SmokingTime");
         totalSmokingTime = nbt.getInt("TotalSmokingTime");
-        fuelTime = nbt.getInt("FuelTime");
+        burnTime = nbt.getInt("BurnTime");
     }
 
     @Override
@@ -84,7 +84,7 @@ public class ImprovedSmokerBlockEntity extends BlockEntity implements Implemente
         ContainerHelper.saveAllItems(nbt, this.inventory);
         nbt.putInt("SmokingTime", smokingTime);
         nbt.putInt("TotalSmokingTime", totalSmokingTime);
-        nbt.putInt("FuelTime", fuelTime);
+        nbt.putInt("BurnTime", burnTime);
     }
 
     @Override
@@ -93,28 +93,28 @@ public class ImprovedSmokerBlockEntity extends BlockEntity implements Implemente
         boolean dirty = false;
         boolean wasLit = state.getValue(ImprovedSmokerBlock.LIT);
         boolean isLit = false;
-        if (fuelTime > 0) {
-            fuelTime--;
+        if (burnTime > 0) {
+            burnTime--;
             isLit = true;
         }
-        if (fuelTime == 0 && !getItem(FUEL_SLOT).isEmpty() && !getItem(INPUT_SLOT).isEmpty()) {
+        if (burnTime == 0 && !getItem(SMOKINGMATERIAL_SLOT).isEmpty() && !getItem(INPUT_SLOT).isEmpty()) {
             SimpleContainer container = new SimpleContainer(2);
-            container.setItem(0, getItem(FUEL_SLOT));
+            container.setItem(0, getItem(SMOKINGMATERIAL_SLOT));
             container.setItem(1, getItem(INPUT_SLOT));
             currentRecipe = world.getRecipeManager().getRecipeFor(CommonRegistry.SMOKER_RECIPE_TYPE.get(), container, world).orElse(null);
             if (currentRecipe != null) {
-                fuelTime = PLANKS_FUEL_TIME;
-                getItem(FUEL_SLOT).shrink(1);
+                burnTime = MATERIAL_BURN_TIME;
+                getItem(SMOKINGMATERIAL_SLOT).shrink(1);
                 dirty = true;
                 isLit = true;
-            } else if (Ingredient.of(ItemTags.PLANKS).test(getItem(FUEL_SLOT))) {
-                fuelTime = PLANKS_FUEL_TIME;
-                getItem(FUEL_SLOT).shrink(1);
+            } else if (Ingredient.of(ItemTags.PLANKS).test(getItem(SMOKINGMATERIAL_SLOT))) {
+                burnTime = MATERIAL_BURN_TIME;
+                getItem(SMOKINGMATERIAL_SLOT).shrink(1);
                 dirty = true;
                 isLit = true;
             }
         }
-        if (fuelTime > 0) {
+        if (burnTime > 0) {
             if (currentRecipe != null) {
                 if (smokingTime == 0) {
                     totalSmokingTime = currentRecipe.getCraftingTime();
@@ -126,14 +126,14 @@ public class ImprovedSmokerBlockEntity extends BlockEntity implements Implemente
                     dirty = true;
                     currentRecipe = null;
                 }
-            } else if (!getItem(INPUT_SLOT).isEmpty() && Ingredient.of(ItemTags.PLANKS).test(getItem(FUEL_SLOT))) {
+            } else if (!getItem(INPUT_SLOT).isEmpty() && Ingredient.of(ItemTags.PLANKS).test(getItem(SMOKINGMATERIAL_SLOT))) {
                 if (smokingTime == 0) {
                     totalSmokingTime = 200;
                 }
                 smokingTime++;
                 if (smokingTime >= totalSmokingTime) {
                     smokingTime = 0;
-                    processFuelDefault();
+                    processSmokingMaterialDefault();
                     dirty = true;
                 }
             }
@@ -148,7 +148,7 @@ public class ImprovedSmokerBlockEntity extends BlockEntity implements Implemente
         }
     }
 
-    private void processFuelDefault() {
+    private void processSmokingMaterialDefault() {
         ItemStack inputStack = getItem(INPUT_SLOT);
         if (inputStack.isEmpty()) return;
 
@@ -217,12 +217,12 @@ public class ImprovedSmokerBlockEntity extends BlockEntity implements Implemente
 
     @Override
     public int @NotNull [] getSlotsForFace(Direction side) {
-        return side == Direction.DOWN ? new int[]{OUTPUT_SLOT} : new int[]{INPUT_SLOT, FUEL_SLOT};
+        return side == Direction.DOWN ? new int[]{OUTPUT_SLOT} : new int[]{INPUT_SLOT, SMOKINGMATERIAL_SLOT};
     }
 
     @Override
     public boolean canPlaceItemThroughFace(int slot, ItemStack stack, @Nullable Direction dir) {
-        return slot == INPUT_SLOT || slot == FUEL_SLOT;
+        return slot == INPUT_SLOT || slot == SMOKINGMATERIAL_SLOT;
     }
 
     @Override

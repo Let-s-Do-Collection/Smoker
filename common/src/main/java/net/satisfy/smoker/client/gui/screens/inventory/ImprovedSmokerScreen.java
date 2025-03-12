@@ -38,9 +38,9 @@ public class ImprovedSmokerScreen extends AbstractContainerScreen<ImprovedSmoker
     }
 
     protected void renderBurnIcon(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        int burnHeight = menu.getFuelProgress();
-        int fuelSlotIndex = 2;
-        ItemStack fuelStack = menu.getSlot(fuelSlotIndex).getItem();
+        int burnHeight = menu.getSmokingProgress();
+        int smokingSlotIndex = 2;
+        ItemStack smokingStack = menu.getSlot(smokingSlotIndex).getItem();
 
         int burnIconX = leftPos + 56;
         int burnIconY = topPos + 36 + (14 - burnHeight);
@@ -49,8 +49,8 @@ public class ImprovedSmokerScreen extends AbstractContainerScreen<ImprovedSmoker
             guiGraphics.blit(BG, burnIconX, burnIconY, 176, 14 - burnHeight, 14, burnHeight);
         }
 
-        if (isMouseOverBurnIcon(mouseX, mouseY) && !fuelStack.isEmpty()) {
-            Component tooltip = getFuelTooltip(fuelStack);
+        if (isMouseOverBurnIcon(mouseX, mouseY) && !smokingStack.isEmpty()) {
+            Component tooltip = getSmokingTooltip(smokingStack);
             guiGraphics.renderTooltip(this.font, tooltip, mouseX, mouseY);
         }
     }
@@ -62,8 +62,8 @@ public class ImprovedSmokerScreen extends AbstractContainerScreen<ImprovedSmoker
                 mouseY >= burnIconY && mouseY <= burnIconY + 14;
     }
 
-    private Component getFuelTooltip(ItemStack fuelStack) {
-        return Component.translatable("tooltip.smoker.block.current_smoking_wood", fuelStack.getHoverName());
+    private Component getSmokingTooltip(ItemStack smokingStack) {
+        return Component.translatable("tooltip.smoker.block.current_smoking_wood", smokingStack.getHoverName());
     }
 
     protected void renderProgressArrow(GuiGraphics guiGraphics, int mouseX, int mouseY) {

@@ -19,7 +19,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class SmokerModifierRecipe implements Recipe<Container> {
     private final ResourceLocation id;
-    private final Ingredient fuel;
+    private final Ingredient smokingMaterial;
     private final double saturation;
     private final double nutrition;
     private final int craftingTime;
@@ -27,9 +27,9 @@ public class SmokerModifierRecipe implements Recipe<Container> {
     private final String effectName;
     private final int effectDuration;
 
-    public SmokerModifierRecipe(ResourceLocation id, Ingredient fuel, double saturation, double nutrition, int craftingTime, int healAmount, String effectName, int effectDuration) {
+    public SmokerModifierRecipe(ResourceLocation id, Ingredient smokingMaterial, double saturation, double nutrition, int craftingTime, int healAmount, String effectName, int effectDuration) {
         this.id = id;
-        this.fuel = fuel;
+        this.smokingMaterial = smokingMaterial;
         this.saturation = saturation;
         this.nutrition = nutrition;
         this.craftingTime = craftingTime;
@@ -40,9 +40,9 @@ public class SmokerModifierRecipe implements Recipe<Container> {
 
     @Override
     public boolean matches(Container container, Level level) {
-        ItemStack fuelStack = container.getItem(0);
+        ItemStack smokingMaterialStack = container.getItem(0);
         ItemStack inputStack = container.getItem(1);
-        return !fuelStack.isEmpty() && fuel.test(fuelStack) && !inputStack.isEmpty();
+        return !smokingMaterialStack.isEmpty() && smokingMaterial.test(smokingMaterialStack) && !inputStack.isEmpty();
     }
 
     @Override
@@ -122,7 +122,7 @@ public class SmokerModifierRecipe implements Recipe<Container> {
         @Override
         public @NotNull SmokerModifierRecipe fromJson(ResourceLocation id, JsonObject json) {
             String material = GsonHelper.getAsString(json, "material");
-            Ingredient fuel = Ingredient.of(new ItemStack(BuiltInRegistries.ITEM.get(new ResourceLocation(material))));
+            Ingredient smokingMaterial = Ingredient.of(new ItemStack(BuiltInRegistries.ITEM.get(new ResourceLocation(material))));
             JsonObject mod = GsonHelper.getAsJsonObject(json, "modifiers");
             double saturation = GsonHelper.getAsDouble(mod, "saturation");
             double nutrition = GsonHelper.getAsDouble(mod, "nutrition");
@@ -131,12 +131,12 @@ public class SmokerModifierRecipe implements Recipe<Container> {
             String effectName = mod.has("effect") ? GsonHelper.getAsString(mod, "effect") : "";
             int effectDuration = mod.has("effect_duration") ? GsonHelper.getAsInt(mod, "effect_duration") : 0;
 
-            return new SmokerModifierRecipe(id, fuel, saturation, nutrition, craftingTime, healAmount, effectName, effectDuration);
+            return new SmokerModifierRecipe(id, smokingMaterial, saturation, nutrition, craftingTime, healAmount, effectName, effectDuration);
         }
 
         @Override
         public @NotNull SmokerModifierRecipe fromNetwork(ResourceLocation id, FriendlyByteBuf buf) {
-            Ingredient fuel = Ingredient.fromNetwork(buf);
+            Ingredient smokingMaterial = Ingredient.fromNetwork(buf);
             double saturation = buf.readDouble();
             double nutrition = buf.readDouble();
             int craftingTime = buf.readVarInt();
@@ -144,12 +144,12 @@ public class SmokerModifierRecipe implements Recipe<Container> {
             String effectName = buf.readUtf();
             int effectDuration = buf.readVarInt();
 
-            return new SmokerModifierRecipe(id, fuel, saturation, nutrition, craftingTime, healAmount, effectName, effectDuration);
+            return new SmokerModifierRecipe(id, smokingMaterial, saturation, nutrition, craftingTime, healAmount, effectName, effectDuration);
         }
 
         @Override
         public void toNetwork(FriendlyByteBuf buf, SmokerModifierRecipe recipe) {
-            recipe.fuel.toNetwork(buf);
+            recipe.smokingMaterial.toNetwork(buf);
             buf.writeDouble(recipe.saturation);
             buf.writeDouble(recipe.nutrition);
             buf.writeVarInt(recipe.craftingTime);
