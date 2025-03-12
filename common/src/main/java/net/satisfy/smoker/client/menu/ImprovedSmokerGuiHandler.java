@@ -92,6 +92,11 @@ public class ImprovedSmokerGuiHandler extends AbstractContainerMenu {
         return originalStack;
     }
 
+    public int getFuelProgress() {
+        int fuel = this.propertyDelegate.get(2);
+        return fuel * 14 / 100;
+    }
+
     @Override
     public boolean stillValid(Player player) {
         return true;

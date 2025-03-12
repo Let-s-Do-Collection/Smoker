@@ -3,10 +3,7 @@
   "material": "minecraft:birch_planks",
   "modifiers": {
     "saturation": 0.10,
-    "nutrition": 0.05,
-    "gives_effect": true,
-    "effect_id": "minecraft:regeneration",
-    "effect_duration": 400
+    "nutrition": 0.05
   },
   "crafting_time": 200
 }

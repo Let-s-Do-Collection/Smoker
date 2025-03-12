@@ -7,6 +7,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.satisfy.smoker.core.util.SmokerIdentifier;
+import org.joml.Vector2i;
 
 public class ImprovedSmokerGui extends AbstractContainerScreen<ImprovedSmokerGuiHandler> {
     public static final ResourceLocation BG = new SmokerIdentifier("textures/gui/improved_smoker.png");
@@ -34,10 +35,20 @@ public class ImprovedSmokerGui extends AbstractContainerScreen<ImprovedSmokerGui
         RenderSystem.setShaderTexture(0, BG);
         guiGraphics.blit(BG, leftPos, topPos, 0, 0, imageWidth, imageHeight);
         renderProgressArrow(guiGraphics);
+        renderBurnIcon(guiGraphics);
+    }
+
+    protected void renderBurnIcon(GuiGraphics guiGraphics) {
+        int burnHeight = menu.getFuelProgress();
+        if (burnHeight > 0) {
+            Vector2i screenPos = new Vector2i(leftPos + 56, topPos + 36 + (14 - burnHeight));
+            Vector2i texPos = new Vector2i(176, 14 - burnHeight);
+            guiGraphics.blit(BG, screenPos.x(), screenPos.y(), texPos.x(), texPos.y(), 14, burnHeight);
+        }
     }
 
     protected void renderProgressArrow(GuiGraphics guiGraphics) {
         int progressX = menu.getSmokeXProgress();
-        guiGraphics.blit(BG, leftPos + ARROW_X, topPos + ARROW_Y, 177, 14, progressX, 14);
+        guiGraphics.blit(BG, leftPos + ARROW_X, topPos + ARROW_Y, 177, 15, progressX, 16);
     }
 }
