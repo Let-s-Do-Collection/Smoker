@@ -1,0 +1,10 @@
+{
+  "block.smoker.improved_smoker": "Verstärker Räucherofen",
+  "tooltip.smoker.item.processed": "Geräuchert:",
+  "tooltip.smoker.item.saturation": "Sättigungspunkte",
+  "tooltip.smoker.item.nutrition": "Nahrungspunkte",
+  "tooltip.smoker.item.heal": "Heilung",
+  "tooltip.smoker.item.effect": "Effekt",
+  "tooltip.smoker.block.current_smoking_wood": "Aktuelles Räucherholz: %s",
+  "tooltip.smoker.block.remaining_duration": "Restzeit: %s"
+}

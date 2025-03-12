@@ -1,23 +1,24 @@
-package net.satisfy.smoker.client.menu;
+package net.satisfy.smoker.core.world.inventory;
 
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.ItemStack;
-import net.satisfy.smoker.core.registry.ScreenHandlerTypeRegistry;
+import net.satisfy.smoker.core.registry.CommonRegistry;
 import org.jetbrains.annotations.NotNull;
 
-public class ImprovedSmokerGuiHandler extends AbstractContainerMenu {
+public class ImprovedSmokerMenu extends AbstractContainerMenu {
     private final ContainerData propertyDelegate;
 
-    public ImprovedSmokerGuiHandler(int syncId, Inventory playerInventory) {
+    public ImprovedSmokerMenu(int syncId, Inventory playerInventory) {
         this(syncId, playerInventory, new SimpleContainer(3), new SimpleContainerData(3));
     }
 
-    public ImprovedSmokerGuiHandler(int syncId, Inventory playerInventory, Container inventory, ContainerData propertyDelegate) {
-        super(ScreenHandlerTypeRegistry.SMOKING_GUI_HANDLER.get(), syncId);
+    public ImprovedSmokerMenu(int syncId, Inventory playerInventory, Container inventory, ContainerData propertyDelegate) {
+        super(CommonRegistry.SMOKING_GUI_HANDLER.get(), syncId);
         this.propertyDelegate = propertyDelegate;
 
         buildBlockEntityContainer(playerInventory, inventory);
@@ -60,23 +61,29 @@ public class ImprovedSmokerGuiHandler extends AbstractContainerMenu {
         ItemStack stack = slot.getItem();
         ItemStack originalStack = stack.copy();
         final int outputSlot = 0;
-        final int inputSlot = 1;
-        final int fuelSlot = 2;
+        final int edibleSlot = 1;
+        final int plankSlot = 2;
         final int playerInvStart = 3;
         final int hotbarStart = playerInvStart + 27;
         final int hotbarEnd = hotbarStart + 9;
+
         if (index == outputSlot) {
             if (!moveItemStackTo(stack, playerInvStart, hotbarEnd, true)) {
                 return ItemStack.EMPTY;
             }
             slot.onQuickCraft(stack, originalStack);
-        } else if (index == inputSlot || index == fuelSlot) {
+        } else if (index == edibleSlot || index == plankSlot) {
             if (!moveItemStackTo(stack, playerInvStart, hotbarEnd, false)) {
                 return ItemStack.EMPTY;
             }
         } else if (index >= playerInvStart) {
-            if (!moveItemStackTo(stack, inputSlot, inputSlot + 1, false) &&
-                    !moveItemStackTo(stack, fuelSlot, fuelSlot + 1, false)) {
+            boolean moved = false;
+            if (stack.getItem().isEdible()) {
+                moved = moveItemStackTo(stack, edibleSlot, edibleSlot + 1, false);
+            } else if (stack.getItem().builtInRegistryHolder().is(ItemTags.PLANKS)) {
+                moved = moveItemStackTo(stack, plankSlot, plankSlot + 1, false);
+            }
+            if (!moved) {
                 return ItemStack.EMPTY;
             }
         }
@@ -95,6 +102,10 @@ public class ImprovedSmokerGuiHandler extends AbstractContainerMenu {
     public int getFuelProgress() {
         int fuel = this.propertyDelegate.get(2);
         return fuel * 14 / 100;
+    }
+
+    public int getRemainingSmokeTime() {
+        return this.propertyDelegate.get(1) - this.propertyDelegate.get(0);
     }
 
     @Override

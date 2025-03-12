@@ -19,12 +19,11 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.state.BlockState;
-import net.satisfy.smoker.client.menu.ImprovedSmokerGuiHandler;
+import net.satisfy.smoker.core.registry.CommonRegistry;
+import net.satisfy.smoker.core.world.inventory.ImprovedSmokerMenu;
 import net.satisfy.smoker.core.recipe.SmokerModifierRecipe;
-import net.satisfy.smoker.core.registry.EntityTypeRegistry;
-import net.satisfy.smoker.core.registry.ObjectRegistry;
-import net.satisfy.smoker.core.registry.RecipeTypeRegistry;
 import net.satisfy.smoker.core.world.inventory.ImplementedInventory;
+import net.satisfy.smoker.core.world.level.block.ImprovedSmokerBlock;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -65,7 +64,7 @@ public class ImprovedSmokerBlockEntity extends BlockEntity implements Implemente
     };
 
     public ImprovedSmokerBlockEntity(BlockPos pos, BlockState state) {
-        super(EntityTypeRegistry.IMPROVED_SMOKER.get(), pos, state);
+        super(CommonRegistry.IMPROVED_SMOKER_ENTITY.get(), pos, state);
         this.inventory = NonNullList.withSize(CAPACITY, ItemStack.EMPTY);
     }
 
@@ -92,33 +91,33 @@ public class ImprovedSmokerBlockEntity extends BlockEntity implements Implemente
     public void tick(Level world, BlockPos pos, BlockState state, ImprovedSmokerBlockEntity blockEntity) {
         if (world.isClientSide) return;
         boolean dirty = false;
-
+        boolean wasLit = state.getValue(ImprovedSmokerBlock.LIT);
+        boolean isLit = false;
         if (fuelTime > 0) {
             fuelTime--;
+            isLit = true;
         }
-
-        if (fuelTime == 0 && !getItem(FUEL_SLOT).isEmpty()) {
-            SimpleContainer container = new SimpleContainer(getItem(FUEL_SLOT));
-            currentRecipe = world.getRecipeManager().getRecipeFor(RecipeTypeRegistry.SMOKER_RECIPE_TYPE.get(), container, world).orElse(null);
-
+        if (fuelTime == 0 && !getItem(FUEL_SLOT).isEmpty() && !getItem(INPUT_SLOT).isEmpty()) {
+            SimpleContainer container = new SimpleContainer(getItem(INPUT_SLOT));
+            currentRecipe = world.getRecipeManager().getRecipeFor(CommonRegistry.SMOKER_RECIPE_TYPE.get(), container, world).orElse(null);
             if (currentRecipe != null) {
                 fuelTime = PLANKS_FUEL_TIME;
                 getItem(FUEL_SLOT).shrink(1);
                 dirty = true;
+                isLit = true;
             } else if (Ingredient.of(ItemTags.PLANKS).test(getItem(FUEL_SLOT))) {
                 fuelTime = PLANKS_FUEL_TIME;
                 getItem(FUEL_SLOT).shrink(1);
                 dirty = true;
+                isLit = true;
             }
         }
-
         if (fuelTime > 0) {
             if (currentRecipe != null && getItem(INPUT_SLOT).isEdible()) {
                 if (smokingTime == 0) {
                     totalSmokingTime = currentRecipe.getCraftingTime();
                 }
                 smokingTime++;
-
                 if (smokingTime >= totalSmokingTime) {
                     smokingTime = 0;
                     processInput(currentRecipe);
@@ -130,7 +129,6 @@ public class ImprovedSmokerBlockEntity extends BlockEntity implements Implemente
                     totalSmokingTime = 200;
                 }
                 smokingTime++;
-
                 if (smokingTime >= totalSmokingTime) {
                     smokingTime = 0;
                     processFuelDefault();
@@ -140,7 +138,9 @@ public class ImprovedSmokerBlockEntity extends BlockEntity implements Implemente
         } else {
             smokingTime = 0;
         }
-
+        if (wasLit != isLit) {
+            world.setBlock(pos, state.setValue(ImprovedSmokerBlock.LIT, isLit), 3);
+        }
         if (dirty) {
             setChanged();
         }
@@ -244,12 +244,12 @@ public class ImprovedSmokerBlockEntity extends BlockEntity implements Implemente
 
     @Override
     public @NotNull Component getDisplayName() {
-        return ObjectRegistry.IMPROVED_SMOKER.get().getName();
+        return CommonRegistry.IMPROVED_SMOKER.get().getName();
     }
 
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int syncId, Inventory inv, Player player) {
-        return new ImprovedSmokerGuiHandler(syncId, inv, this, propertyDelegate);
+        return new ImprovedSmokerMenu(syncId, inv, this, propertyDelegate);
     }
 }

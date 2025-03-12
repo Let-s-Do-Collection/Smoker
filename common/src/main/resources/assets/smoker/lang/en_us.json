@@ -5,5 +5,6 @@
   "tooltip.smoker.item.nutrition": "Nutrition",
   "tooltip.smoker.item.heal": "Healing",
   "tooltip.smoker.item.effect": "Effect",
-  "tooltip.smoker.block.current_smoking_wood": "Current Smoking Wood: %s"
+  "tooltip.smoker.block.current_smoking_wood": "Current Smoking Wood: %s",
+  "tooltip.smoker.block.remaining_duration": "Remaining time: %s"
 }

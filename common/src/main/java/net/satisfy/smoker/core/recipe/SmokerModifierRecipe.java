@@ -14,7 +14,7 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
-import net.satisfy.smoker.core.registry.RecipeTypeRegistry;
+import net.satisfy.smoker.core.registry.CommonRegistry;
 import org.jetbrains.annotations.NotNull;
 
 public class SmokerModifierRecipe implements Recipe<Container> {
@@ -80,12 +80,12 @@ public class SmokerModifierRecipe implements Recipe<Container> {
 
     @Override
     public @NotNull RecipeSerializer<?> getSerializer() {
-        return RecipeTypeRegistry.SMOKER_RECIPE_SERIALIZER.get();
+        return CommonRegistry.SMOKER_RECIPE_SERIALIZER.get();
     }
 
     @Override
     public @NotNull RecipeType<?> getType() {
-        return RecipeTypeRegistry.SMOKER_RECIPE_TYPE.get();
+        return CommonRegistry.SMOKER_RECIPE_TYPE.get();
     }
 
     public double getSaturation() {

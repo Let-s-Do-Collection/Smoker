@@ -5,7 +5,7 @@ import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.satisfy.smoker.Smoker;
 import net.fabricmc.api.ModInitializer;
-import net.satisfy.smoker.core.registry.ObjectRegistry;
+import net.satisfy.smoker.core.registry.CommonRegistry;
 
 public class SmokerFabric implements ModInitializer {
     @Override
@@ -15,6 +15,6 @@ public class SmokerFabric implements ModInitializer {
     }
 
     private static void addItemsToCreativeTab(FabricItemGroupEntries entries) {
-        entries.accept(ObjectRegistry.IMPROVED_SMOKER.get().asItem());
+        entries.accept(CommonRegistry.IMPROVED_SMOKER.get().asItem());
     }
 }
