@@ -14,7 +14,6 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
-import net.satisfy.smoker.Smoker;
 import net.satisfy.smoker.core.registry.RecipeTypeRegistry;
 import org.jetbrains.annotations.NotNull;
 
@@ -24,13 +23,15 @@ public class SmokerModifierRecipe implements Recipe<Container> {
     private final double saturation;
     private final double nutrition;
     private final int craftingTime;
+    private final int healAmount; 
 
-    public SmokerModifierRecipe(ResourceLocation id, Ingredient fuel, double saturation, double nutrition, int craftingTime) {
+    public SmokerModifierRecipe(ResourceLocation id, Ingredient fuel, double saturation, double nutrition, int craftingTime, int healAmount) {
         this.id = id;
         this.fuel = fuel;
         this.saturation = saturation;
         this.nutrition = nutrition;
         this.craftingTime = craftingTime;
+        this.healAmount = healAmount;
     }
 
     @Override
@@ -48,7 +49,8 @@ public class SmokerModifierRecipe implements Recipe<Container> {
         CompoundTag tag = result.getOrCreateTag();
         tag.putDouble("smoker_saturation", getSaturation());
         tag.putDouble("smoker_nutrition", getNutrition());
-        return Smoker.setSmokerProcessed(result);
+        tag.putInt("smoker_heal_amount", getHealAmount()); 
+        return result;
     }
 
     @Override
@@ -88,6 +90,10 @@ public class SmokerModifierRecipe implements Recipe<Container> {
         return craftingTime;
     }
 
+    public int getHealAmount() {
+        return healAmount;
+    }
+
     public static class Serializer implements RecipeSerializer<SmokerModifierRecipe> {
         @Override
         public @NotNull SmokerModifierRecipe fromJson(ResourceLocation id, JsonObject json) {
@@ -97,7 +103,9 @@ public class SmokerModifierRecipe implements Recipe<Container> {
             double saturation = GsonHelper.getAsDouble(mod, "saturation");
             double nutrition = GsonHelper.getAsDouble(mod, "nutrition");
             int craftingTime = GsonHelper.getAsInt(json, "crafting_time");
-            return new SmokerModifierRecipe(id, fuel, saturation, nutrition, craftingTime);
+            int healAmount = GsonHelper.getAsInt(mod, "heal_amount", 0); 
+
+            return new SmokerModifierRecipe(id, fuel, saturation, nutrition, craftingTime, healAmount);
         }
 
         @Override
@@ -106,7 +114,8 @@ public class SmokerModifierRecipe implements Recipe<Container> {
             double saturation = buf.readDouble();
             double nutrition = buf.readDouble();
             int craftingTime = buf.readVarInt();
-            return new SmokerModifierRecipe(id, fuel, saturation, nutrition, craftingTime);
+            int healAmount = buf.readVarInt();
+            return new SmokerModifierRecipe(id, fuel, saturation, nutrition, craftingTime, healAmount);
         }
 
         @Override
@@ -115,6 +124,7 @@ public class SmokerModifierRecipe implements Recipe<Container> {
             buf.writeDouble(recipe.saturation);
             buf.writeDouble(recipe.nutrition);
             buf.writeVarInt(recipe.craftingTime);
+            buf.writeVarInt(recipe.healAmount);
         }
     }
 }

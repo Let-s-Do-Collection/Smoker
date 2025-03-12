@@ -1,6 +1,6 @@
 {
   "block.smoker.improved_smoker": "Improved Smoker",
-  "tooltip.smoker.item.processed": "This Item has been Smoked:",
+  "tooltip.smoker.item.processed": "Smoked:",
   "tooltip.smoker.item.saturation": "Saturation",
   "tooltip.smoker.item.nutrition": "Nutrition"
 }

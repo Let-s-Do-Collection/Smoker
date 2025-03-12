@@ -3,7 +3,8 @@
   "material": "minecraft:birch_planks",
   "modifiers": {
     "saturation": 0.10,
-    "nutrition": 0.05
+    "nutrition": 0.05,
+    "heal_amount": 10
   },
   "crafting_time": 200
 }

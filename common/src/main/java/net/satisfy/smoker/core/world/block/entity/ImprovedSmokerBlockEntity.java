@@ -163,11 +163,13 @@ public class ImprovedSmokerBlockEntity extends BlockEntity implements Implemente
     private void processInput(SmokerModifierRecipe recipe) {
         ItemStack input = getItem(INPUT_SLOT);
         if (input.isEmpty() || !input.isEdible()) return;
+
         ItemStack output = input.copy();
         output.setCount(1);
-        output.getOrCreateTag().putDouble("smoker_saturation", recipe.getSaturation());
-        output.getOrCreateTag().putDouble("smoker_nutrition", recipe.getNutrition());
-        output.getOrCreateTag().putBoolean("SmokerProcessed", true);
+        CompoundTag tag = output.getOrCreateTag();
+        tag.putDouble("smoker_saturation", recipe.getSaturation());
+        tag.putDouble("smoker_nutrition", recipe.getNutrition());
+        tag.putInt("smoker_heal_amount", recipe.getHealAmount());
 
         ItemStack currentOutput = getItem(OUTPUT_SLOT);
         if (ItemStack.isSameItemSameTags(currentOutput, output)) {
