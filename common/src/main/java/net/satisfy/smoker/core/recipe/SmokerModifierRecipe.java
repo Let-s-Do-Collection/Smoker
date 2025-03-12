@@ -41,7 +41,8 @@ public class SmokerModifierRecipe implements Recipe<Container> {
     @Override
     public boolean matches(Container container, Level level) {
         ItemStack fuelStack = container.getItem(0);
-        return !fuelStack.isEmpty() && fuel.test(fuelStack);
+        ItemStack inputStack = container.getItem(1);
+        return !fuelStack.isEmpty() && fuel.test(fuelStack) && !inputStack.isEmpty();
     }
 
     @Override
@@ -86,6 +87,7 @@ public class SmokerModifierRecipe implements Recipe<Container> {
     @Override
     public @NotNull RecipeType<?> getType() {
         return CommonRegistry.SMOKER_RECIPE_TYPE.get();
+
     }
 
     public double getSaturation() {

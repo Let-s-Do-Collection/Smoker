@@ -98,7 +98,9 @@ public class ImprovedSmokerBlockEntity extends BlockEntity implements Implemente
             isLit = true;
         }
         if (fuelTime == 0 && !getItem(FUEL_SLOT).isEmpty() && !getItem(INPUT_SLOT).isEmpty()) {
-            SimpleContainer container = new SimpleContainer(getItem(INPUT_SLOT));
+            SimpleContainer container = new SimpleContainer(2);
+            container.setItem(0, getItem(FUEL_SLOT));
+            container.setItem(1, getItem(INPUT_SLOT));
             currentRecipe = world.getRecipeManager().getRecipeFor(CommonRegistry.SMOKER_RECIPE_TYPE.get(), container, world).orElse(null);
             if (currentRecipe != null) {
                 fuelTime = PLANKS_FUEL_TIME;
@@ -113,7 +115,7 @@ public class ImprovedSmokerBlockEntity extends BlockEntity implements Implemente
             }
         }
         if (fuelTime > 0) {
-            if (currentRecipe != null && getItem(INPUT_SLOT).isEdible()) {
+            if (currentRecipe != null) {
                 if (smokingTime == 0) {
                     totalSmokingTime = currentRecipe.getCraftingTime();
                 }

@@ -59,9 +59,7 @@ public class SmokerTooltip {
                 MobEffect effect = BuiltInRegistries.MOB_EFFECT.get(new ResourceLocation(effectName));
 
                 if (effect != null) {
-                    tooltip.add(Component.translatable("tooltip.smoker.item.effect")
-                            .append(": " + effect.getDisplayName().getString() + " (" + effectDuration + ")")
-                            .setStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x5599FF))));
+                    tooltip.add(Component.translatable("tooltip.smoker.item.effect").append(": " + effect.getDisplayName().getString() + " (" + effectDuration + ")").setStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x5599FF))));
                 }
             }
         }
