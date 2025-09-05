@@ -20,8 +20,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.state.BlockState;
 import net.satisfy.smoker.core.registry.CommonRegistry;
-import net.satisfy.smoker.core.world.inventory.ImprovedSmokerMenu;
 import net.satisfy.smoker.core.recipe.SmokerModifierRecipe;
+import net.satisfy.smoker.core.world.inventory.ImprovedSmokerMenu;
 import net.satisfy.smoker.core.world.inventory.ImplementedInventory;
 import net.satisfy.smoker.core.world.level.block.ImprovedSmokerBlock;
 import org.jetbrains.annotations.NotNull;
@@ -36,6 +36,7 @@ public class ImprovedSmokerBlockEntity extends BlockEntity implements Implemente
     private int burnTime = 0;
     private int smokingTime = 0;
     private int totalSmokingTime = 0;
+    private int litValue = 0;
 
     private SmokerModifierRecipe currentRecipe;
     private NonNullList<ItemStack> inventory;
@@ -46,6 +47,7 @@ public class ImprovedSmokerBlockEntity extends BlockEntity implements Implemente
                 case 0 -> smokingTime;
                 case 1 -> totalSmokingTime;
                 case 2 -> burnTime;
+                case 3 -> litValue;
                 default -> 0;
             };
         }
@@ -55,11 +57,12 @@ public class ImprovedSmokerBlockEntity extends BlockEntity implements Implemente
                 case 0 -> smokingTime = value;
                 case 1 -> totalSmokingTime = value;
                 case 2 -> burnTime = value;
+                case 3 -> litValue = value;
             }
         }
         @Override
         public int getCount() {
-            return 3;
+            return 4;
         }
     };
 
@@ -73,9 +76,11 @@ public class ImprovedSmokerBlockEntity extends BlockEntity implements Implemente
         super.load(nbt);
         this.inventory = NonNullList.withSize(getContainerSize(), ItemStack.EMPTY);
         ContainerHelper.loadAllItems(nbt, this.inventory);
+
         smokingTime = nbt.getInt("SmokingTime");
         totalSmokingTime = nbt.getInt("TotalSmokingTime");
         burnTime = nbt.getInt("BurnTime");
+        litValue = nbt.getInt("LitValue");
     }
 
     @Override
@@ -85,6 +90,7 @@ public class ImprovedSmokerBlockEntity extends BlockEntity implements Implemente
         nbt.putInt("SmokingTime", smokingTime);
         nbt.putInt("TotalSmokingTime", totalSmokingTime);
         nbt.putInt("BurnTime", burnTime);
+        nbt.putInt("LitValue", litValue);
     }
 
     @Override
@@ -143,6 +149,7 @@ public class ImprovedSmokerBlockEntity extends BlockEntity implements Implemente
         if (wasLit != isLit) {
             world.setBlock(pos, state.setValue(ImprovedSmokerBlock.LIT, isLit), 3);
         }
+        propertyDelegate.set(3, isLit ? 1 : 0);
         if (dirty) {
             setChanged();
         }
@@ -233,10 +240,10 @@ public class ImprovedSmokerBlockEntity extends BlockEntity implements Implemente
     @Override
     public void setItem(int slot, ItemStack stack) {
         inventory.set(slot, stack);
-        if (slot == INPUT_SLOT) {
+        if (slot == INPUT_SLOT && stack.isEmpty()) {
             smokingTime = 0;
-            setChanged();
         }
+        setChanged();
     }
 
     @Override

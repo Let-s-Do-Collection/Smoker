@@ -8,37 +8,36 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.ItemStack;
 import net.satisfy.smoker.core.registry.CommonRegistry;
+import net.satisfy.smoker.core.world.level.block.entity.ImprovedSmokerBlockEntity;
 import org.jetbrains.annotations.NotNull;
 
 public class ImprovedSmokerMenu extends AbstractContainerMenu {
     private final ContainerData propertyDelegate;
 
+    public ImprovedSmokerMenu(int syncId, Inventory playerInventory, ImprovedSmokerBlockEntity blockEntity, ContainerData propertyDelegate) {
+        super(CommonRegistry.SMOKING_GUI_HANDLER.get(), syncId);
+        this.propertyDelegate = propertyDelegate;
+        buildBlockEntityContainer(playerInventory, blockEntity);
+        buildPlayerContainer(playerInventory);
+        addDataSlots(propertyDelegate);
+    }
+
     public ImprovedSmokerMenu(int syncId, Inventory playerInventory) {
-        this(syncId, playerInventory, new SimpleContainer(3), new SimpleContainerData(3));
+        this(syncId, playerInventory, new SimpleContainer(3), new SimpleContainerData(4));
     }
 
     public ImprovedSmokerMenu(int syncId, Inventory playerInventory, Container inventory, ContainerData propertyDelegate) {
         super(CommonRegistry.SMOKING_GUI_HANDLER.get(), syncId);
         this.propertyDelegate = propertyDelegate;
-
         buildBlockEntityContainer(playerInventory, inventory);
         buildPlayerContainer(playerInventory);
         addDataSlots(propertyDelegate);
     }
 
-    public int getSmokeXProgress() {
-        int progress = this.propertyDelegate.get(0);
-        int totalProgress = this.propertyDelegate.get(1);
-        if (totalProgress == 0 || progress == 0) {
-            return 0;
-        }
-        return progress * 22 / totalProgress + 1;
-    }
-
     private void buildBlockEntityContainer(Inventory playerInventory, Container inventory) {
-        this.addSlot(new FurnaceResultSlot(playerInventory.player, inventory, 0, 116, 35));
-        this.addSlot(new Slot(inventory, 1, 56, 17));
-        this.addSlot(new Slot(inventory, 2, 56, 53));
+        this.addSlot(new FurnaceResultSlot(playerInventory.player, inventory, 0, 127, 20));
+        this.addSlot(new Slot(inventory, 1, 57, 2));
+        this.addSlot(new Slot(inventory, 2, 57, 37));
     }
 
     private void buildPlayerContainer(Inventory playerInventory) {
@@ -52,7 +51,25 @@ public class ImprovedSmokerMenu extends AbstractContainerMenu {
         }
     }
 
+    public int getSmokeXProgress() {
+        int progress = this.propertyDelegate.get(0);
+        int totalProgress = this.propertyDelegate.get(1);
+        if (totalProgress == 0 || progress == 0) {
+            return 0;
+        }
+        return progress * 10 / totalProgress;
+    }
+
+    public int getRemainingSmokeTime() {
+        return this.propertyDelegate.get(1) - this.propertyDelegate.get(0);
+    }
+
+    public boolean isLit() {
+        return this.propertyDelegate.get(3) == 1;
+    }
+
     @Override
+    @SuppressWarnings("deprecation")
     public @NotNull ItemStack quickMoveStack(Player player, int index) {
         Slot slot = this.slots.get(index);
         if (!slot.hasItem()) {
@@ -97,15 +114,6 @@ public class ImprovedSmokerMenu extends AbstractContainerMenu {
         }
         slot.onTake(player, stack);
         return originalStack;
-    }
-
-    public int getSmokingProgress() {
-        int smoking = this.propertyDelegate.get(2);
-        return smoking * 14 / 100;
-    }
-
-    public int getRemainingSmokeTime() {
-        return this.propertyDelegate.get(1) - this.propertyDelegate.get(0);
     }
 
     @Override
