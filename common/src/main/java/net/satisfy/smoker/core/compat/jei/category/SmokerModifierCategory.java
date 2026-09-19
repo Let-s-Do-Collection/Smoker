@@ -28,14 +28,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-/**
- * JEI category for the Smoking Station's wood-modifier recipes. The recipe has no single fixed
- * output item (see SmokerModifierRecipe#assemble - it applies bonuses to whatever food was fed
- * in), so the food input/output slots show a curated list of common foods for display only. The
- * saturation/nutrition/heal/effect bonuses are shown as small icons (golden carrot, bread, golden
- * apple, the real potion effect icon) with a hover tooltip each, instead of an always-visible
- * wall of text that easily overflowed the category width.
- */
 public class SmokerModifierCategory implements IRecipeCategory<SmokerModifierRecipe> {
     public static final RecipeType<SmokerModifierRecipe> SMOKER_MODIFIER_TYPE =
             RecipeType.create(Smoker.MOD_ID, "smoker_modifier", SmokerModifierRecipe.class);
@@ -116,8 +108,6 @@ public class SmokerModifierCategory implements IRecipeCategory<SmokerModifierRec
                         tooltip.add(SmokerTooltip.formatHealLine(recipe.getHealAmount()));
                     });
         }
-        // The effect icon (if any) is drawn separately in draw()/getTooltip() below - a MobEffect
-        // icon isn't an ItemStack, so it can't go through addSlot/addItemStack like the others.
     }
 
     @Override

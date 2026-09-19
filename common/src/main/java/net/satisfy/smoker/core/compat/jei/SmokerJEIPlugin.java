@@ -20,11 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-/**
- * JEI does its own classpath scanning for @JeiPlugin, so no fabric.mod.json/toml entrypoint is
- * needed for this class beyond it being present on the mod's classpath. Recipe-transfer handling
- * is intentionally not implemented here (out of scope for this pass).
- */
 @JeiPlugin
 public class SmokerJEIPlugin implements IModPlugin {
 

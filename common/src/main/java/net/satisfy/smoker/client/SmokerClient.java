@@ -11,9 +11,6 @@ import net.satisfy.smoker.core.registry.CommonRegistry;
 public class SmokerClient {
 
     public static void onInitializeClient() {
-        // Architectury's MenuRegistry.registerScreenFactory doesn't reliably wire up on NeoForge
-        // (same issue the other Let's Do mods work around) - NeoForge registers its screen via
-        // RegisterMenuScreensEvent in SmokerClientNeoForge instead.
         if (Platform.isFabric()) {
             MenuRegistry.registerScreenFactory(CommonRegistry.SMOKING_GUI_HANDLER.get(), ImprovedSmokerScreen::new);
         }

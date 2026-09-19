@@ -13,12 +13,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-/**
- * Wraps a SmokerModifierRecipe for REI. The recipe has no fixed food ingredient or fixed output
- * item (see SmokerModifierRecipe#assemble - it applies bonuses to whatever food was fed in), so
- * the food input/output slots show a curated list of common foods (SmokerCompatFoods) purely for
- * display; the wood material slot is the recipe's real, exact input.
- */
 public class SmokerModifierDisplay extends BasicDisplay {
     private final SmokerModifierRecipe recipe;
 

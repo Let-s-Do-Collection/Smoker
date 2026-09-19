@@ -74,13 +74,6 @@ public class SmokerTooltip {
         }
     }
 
-    /**
-     * Formats the saturation/nutrition/heal/effect modifiers of a Smoker Modifier recipe into
-     * display lines, mirroring the style used by addSmokerTooltip for already-smoked items.
-     * Used by the JEI/REI recipe-viewer integration to show a recipe's bonuses without a fixed
-     * output item (the recipe applies its bonuses to whatever food was fed in, see
-     * SmokerModifierRecipe#assemble).
-     */
     public static List<Component> formatModifierLines(SmokerModifierRecipe recipe) {
         List<Component> lines = new ArrayList<>();
         lines.add(formatSaturationLine(recipe.getSaturation()));
@@ -97,10 +90,6 @@ public class SmokerTooltip {
         return lines;
     }
 
-    /**
-     * Single-modifier tooltip lines, used to label the small icon slots the JEI/REI recipe-viewer
-     * category renders instead of a wall of always-visible text.
-     */
     public static Component formatSaturationLine(double saturation) {
         double pct = saturation * 100;
         String text = (pct % 1 == 0) ? String.format("+%.0f%%", pct) : String.format("%.1f%%", pct);

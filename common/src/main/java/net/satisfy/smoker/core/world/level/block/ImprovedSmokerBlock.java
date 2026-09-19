@@ -35,12 +35,6 @@ public class ImprovedSmokerBlock extends BaseEntityBlock implements EntityBlock,
     public static final MapCodec<ImprovedSmokerBlock> CODEC = simpleCodec(ImprovedSmokerBlock::new);
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
     public static final BooleanProperty LIT = BlockStateProperties.LIT;
-    /**
-     * Cosmetic smoke-color category currently burning (SmokerSmokeColors.NORMAL/DARK/WARM), kept
-     * as a blockstate property (rather than read from the block entity's inventory) so it syncs to
-     * every nearby client for free, the same way LIT already does - block entity inventory contents
-     * are not synced to bystanders.
-     */
     public static final IntegerProperty SMOKE_KIND = IntegerProperty.create("smoke_kind", SmokerSmokeColors.NORMAL, SmokerSmokeColors.WARM);
 
     public ImprovedSmokerBlock(Properties settings) {
@@ -140,8 +134,6 @@ public class ImprovedSmokerBlock extends BaseEntityBlock implements EntityBlock,
                 net.minecraft.core.particles.SimpleParticleType coloredSmoke = colored ? SmokerSmokeColors.getSmokeParticle(smokeKind) : null;
                 net.minecraft.core.particles.SimpleParticleType coloredLargeSmoke = colored ? SmokerSmokeColors.getLargeSmokeParticle(smokeKind) : null;
                 if (coloredSmoke != null && coloredLargeSmoke != null) {
-                    // Mirror vanilla's own two-particle mix exactly: a quick small puff plus a
-                    // slower, much larger and longer-lived column, just tinted.
                     level.addParticle(coloredSmoke, x, y, z, 0.0, 0.05, 0.0);
                     level.addParticle(coloredLargeSmoke, x, y, z, 0.0, 0.02, 0.0);
                 } else {

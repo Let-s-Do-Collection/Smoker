@@ -49,23 +49,12 @@ public class CommonRegistry {
     public static final RegistrySupplier<MenuType<ImprovedSmokerMenu>> SMOKING_GUI_HANDLER =
         createMenu(() -> new MenuType<>(ImprovedSmokerMenu::new, FeatureFlags.VANILLA_SET));
 
-    /**
-     * Cosmetic colored-smoke particle types spawned by the Smoking Station while lit, chosen based
-     * on the category of wood currently fueling it (see SmokerSmokeColors). Both are data-less,
-     * like vanilla's own ParticleTypes.SMOKE - color is baked into the client-side provider
-     * registered for each type, not carried per-instance.
-     */
     public static final RegistrySupplier<SimpleParticleType> DARK_SMOKE =
         PARTICLE_TYPES.register("dark_smoke", CommonRegistry::createSimpleParticleType);
 
     public static final RegistrySupplier<SimpleParticleType> WARM_SMOKE =
         PARTICLE_TYPES.register("warm_smoke", CommonRegistry::createSimpleParticleType);
 
-    /**
-     * Large, long-lived tinted counterparts to vanilla's CAMPFIRE_SIGNAL_SMOKE (see
-     * TintedCampfireSmokeParticle) - spawned alongside DARK_SMOKE/WARM_SMOKE to give colored smoke
-     * the same visual weight as vanilla's own two-particle mix, instead of just a small tinted dot.
-     */
     public static final RegistrySupplier<SimpleParticleType> DARK_SMOKE_LARGE =
         PARTICLE_TYPES.register("dark_smoke_large", CommonRegistry::createSimpleParticleType);
 
@@ -119,12 +108,6 @@ public class CommonRegistry {
         return MENU_TYPES.register("smoking_gui_handler", type);
     }
 
-    /**
-     * SimpleParticleType's own constructor is protected (vanilla builds ParticleTypes.SMOKE etc.
-     * from within the same package) - an anonymous subclass is the simplest cross-platform way to
-     * call it from here without pulling in a loader-specific helper like Fabric's
-     * FabricParticleTypes.simple().
-     */
     private static SimpleParticleType createSimpleParticleType() {
         return new SimpleParticleType(false) {
         };

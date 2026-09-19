@@ -26,9 +26,6 @@ public class ImprovedSmokerScreen extends AbstractContainerScreen<ImprovedSmoker
 
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        // Screen.render() already calls renderBackground(...) itself (which in turn calls our
-        // renderBg()) - calling it again here doubled the dark transparent overlay and drew the
-        // GUI texture/arrow/burn icon twice.
         super.render(guiGraphics, mouseX, mouseY, partialTick);
         renderTooltip(guiGraphics, mouseX, mouseY);
     }

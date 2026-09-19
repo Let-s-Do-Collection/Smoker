@@ -5,13 +5,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.CustomData;
 
-/**
- * Reads and writes the "smoker" custom gameplay data (saturation/nutrition/heal/effect
- * bonuses applied by the Improved Smoker) that used to live directly on the ItemStack's
- * NBT tag pre-1.20.5. Data Components removed ItemStack#getTag()/hasTag(), so this data
- * is now stored as flat keys under DataComponents.CUSTOM_DATA, mirroring the pattern used
- * by Camping's GrillingUtil for its analogous "processed food carries extra stats" feature.
- */
 public final class SmokerFoodData {
     public static final String SATURATION_KEY = "smoker_saturation";
     public static final String NUTRITION_KEY = "smoker_nutrition";
@@ -30,23 +23,11 @@ public final class SmokerFoodData {
         return tag != null && tag.getBoolean(PERFECT_KEY);
     }
 
-    /**
-     * Whether this item has already been smoked once (regardless of which path produced it - the
-     * wood-recipe path or the plain default fallback both set this). Used to keep the Smoking
-     * Station a one-way step from "ready-to-eat food" to "smoked food", not a repeatable process
-     * for restacking bonuses from multiple woods onto the same item.
-     */
     public static boolean isProcessed(ItemStack stack) {
         CompoundTag tag = getTag(stack);
         return tag != null && tag.getBoolean(PROCESSED_KEY);
     }
 
-    /**
-     * Toggles the "perfectly smoked" state reached by letting a finished item rest in the
-     * lit smoker for a while: a small saturation/nutrition bonus on display (see PERFECT_BONUS_MULTIPLIER)
-     * plus an enchantment glint. Never applied to un-smoked items, and reverting only ever falls
-     * back to the item's normal smoked stats, never below them.
-     */
     public static void setPerfect(ItemStack stack, boolean perfect) {
         CompoundTag tag = getOrCreateTag(stack);
         if (perfect) {

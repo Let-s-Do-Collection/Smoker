@@ -45,12 +45,6 @@ public class ImprovedSmokerBlockEntity extends BlockEntity implements Implemente
     private int totalSmokingTime = 0;
     private int litValue = 0;
     private int restTime = 0;
-    /**
-     * Cosmetic smoke-color category of the wood currently burning. Persisted (unlike a purely
-     * derived value would need to be) so it doesn't reset to NORMAL on world reload and briefly
-     * downgrade the block state's already-correct color back to plain grey smoke until the next
-     * material ignites.
-     */
     private int smokeKind = SmokerSmokeColors.NORMAL;
 
     private SmokerModifierRecipe currentRecipe;
@@ -176,12 +170,8 @@ public class ImprovedSmokerBlockEntity extends BlockEntity implements Implemente
             dirty = true;
         }
         if (!isLit) {
-            // Nothing burning any more - don't let a previous wood's color linger for next time.
             smokeKind = SmokerSmokeColors.NORMAL;
         }
-        // This tick() also runs for a vanilla minecraft:smoker hijacked via SmokerBlockMixin (when
-        // replaceVanillaSmoker is on, the default) - that block's state has no SMOKE_KIND property
-        // at all, so only touch it when actually ticking our own ImprovedSmokerBlock.
         if (state.hasProperty(ImprovedSmokerBlock.SMOKE_KIND)) {
             int wasSmokeKind = state.getValue(ImprovedSmokerBlock.SMOKE_KIND);
             if (wasLit != isLit || wasSmokeKind != smokeKind) {
@@ -196,12 +186,6 @@ public class ImprovedSmokerBlockEntity extends BlockEntity implements Implemente
         }
     }
 
-    /**
-     * A finished item left resting in the (still lit) smoker "perfects" after a while for a
-     * small saturation/nutrition bonus and a glint, then quietly reverts to its normal smoked
-     * stats if left for much longer. No fail state either way: taking it any time before that
-     * still gives at least the standard result, and forgetting about it never makes it worse.
-     */
     private boolean updateMaturity(boolean isLit) {
         ItemStack output = getItem(OUTPUT_SLOT);
         if (output.isEmpty() || !isLit) {
@@ -241,8 +225,6 @@ public class ImprovedSmokerBlockEntity extends BlockEntity implements Implemente
         } else if (ItemStack.isSameItemSameComponents(currentOutput, output) && currentOutput.getCount() < currentOutput.getMaxStackSize()) {
             currentOutput.grow(1);
         } else {
-            // Output slot holds an incompatible or full stack (e.g. one still maturing towards
-            // "perfect") - wait rather than overwrite it and lose that item.
             return false;
         }
 
@@ -287,8 +269,6 @@ public class ImprovedSmokerBlockEntity extends BlockEntity implements Implemente
         } else if (ItemStack.isSameItemSameComponents(currentOutput, output) && currentOutput.getCount() < currentOutput.getMaxStackSize()) {
             currentOutput.grow(1);
         } else {
-            // Output slot holds an incompatible or full stack (e.g. one still maturing towards
-            // "perfect") - wait rather than overwrite it and lose that item.
             return false;
         }
 

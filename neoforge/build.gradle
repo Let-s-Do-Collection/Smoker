@@ -120,6 +120,6 @@ tasks.register("curseforge1703101", net.darkhax.curseforgegradle.TaskPublishCurs
     mainFile.addModLoader("NeoForge")
     mainFile.addEnvironment("Client", "Server")
     mainFile.addRequirement("architectury-api")
-    mainFile.addOptional("rei")
+    mainFile.addOptional("roughly-enough-items")
     mainFile.addOptional("jei")
 }

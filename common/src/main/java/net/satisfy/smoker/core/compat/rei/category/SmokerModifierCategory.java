@@ -25,12 +25,6 @@ import net.satisfy.smoker.core.util.SmokerTooltip;
 
 import java.util.List;
 
-/**
- * REI category for the Smoking Station's wood-modifier recipes. Mirrors the JEI category: small
- * icons (golden carrot/bread/golden apple/the real potion effect icon) with a hover tooltip each
- * for the saturation/nutrition/heal/effect bonuses, instead of an always-visible text block that
- * easily overflowed the category width.
- */
 public class SmokerModifierCategory implements DisplayCategory<SmokerModifierDisplay> {
     public static final CategoryIdentifier<SmokerModifierDisplay> SMOKER_MODIFIER_DISPLAY = CategoryIdentifier.of(Smoker.MOD_ID, "smoker_modifier");
     private static final int ICON_SIZE = 18;
@@ -81,8 +75,6 @@ public class SmokerModifierCategory implements DisplayCategory<SmokerModifierDis
         int gridY = startPoint.y;
         int gap = 22;
 
-        // Icons are drawn as plain item renders (not REI Slot entries) plus a separate manual
-        // tooltip overlay, so only our own single line shows on hover - not the item's own name too.
         addIcon(widgets, new Point(gridX, gridY), new ItemStack(Items.GOLDEN_CARROT), SmokerTooltip.formatSaturationLine(recipe.getSaturation()));
         addIcon(widgets, new Point(gridX + gap, gridY), new ItemStack(Items.BREAD), SmokerTooltip.formatNutritionLine(recipe.getNutrition()));
 

@@ -8,10 +8,6 @@ import net.satisfy.smoker.core.compat.rei.display.SmokerModifierDisplay;
 import net.satisfy.smoker.core.recipe.SmokerModifierRecipe;
 import net.satisfy.smoker.core.registry.CommonRegistry;
 
-/**
- * Shared REI registration logic, called from the thin per-platform REIClientPlugin wrappers
- * (fabric/.../SmokerREIClientPluginFabric, neoforge/.../SmokerReiClientPluginNeoForge).
- */
 public class SmokerReiClientPlugin {
 
     public static void registerCategories(CategoryRegistry registry) {

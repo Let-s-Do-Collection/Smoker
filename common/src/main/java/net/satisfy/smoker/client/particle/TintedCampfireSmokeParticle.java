@@ -10,14 +10,6 @@ import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.client.particle.TextureSheetParticle;
 import net.minecraft.core.particles.SimpleParticleType;
 
-/**
- * A tinted stand-in for vanilla's CAMPFIRE_SIGNAL_SMOKE particle - the large, slow, long-lived
- * column that gives normal smoke most of its visual weight (unlike the small, quick SMOKE puff
- * that TintedSmokeParticle mirrors). CampfireSmokeParticle's own constructor is package-private,
- * so it can't be subclassed from here; this replicates its exact constants instead (decompiled
- * from the vanilla class: 3x scale, 0.25x0.25 bounding box, 280-330 tick lifetime, 3.0E-6 gravity,
- * slow random horizontal drift, alpha fade over the last 60 ticks), with our own fixed tint.
- */
 @Environment(EnvType.CLIENT)
 public class TintedCampfireSmokeParticle extends TextureSheetParticle {
     protected TintedCampfireSmokeParticle(ClientLevel level, double x, double y, double z,
