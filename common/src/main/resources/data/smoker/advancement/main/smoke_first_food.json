@@ -1,0 +1,38 @@
+{
+  "parent": "smoker:main/place_smoking_station",
+  "display": {
+    "icon": {
+      "id": "minecraft:cooked_beef",
+      "count": 1
+    },
+    "title": {
+      "translate": "smoker.advancement.smoke_first_food"
+    },
+    "description": {
+      "translate": "smoker.advancement.smoke_first_food.desc"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "smoked_food": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "predicates": {
+              "minecraft:custom_data": "{SmokerProcessed:true}"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "smoked_food"
+    ]
+  ]
+}

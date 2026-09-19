@@ -1,25 +1,29 @@
 package net.satisfy.smoker.core.recipe;
 
-import com.google.gson.JsonObject;
-import net.minecraft.core.RegistryAccess;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.GsonHelper;
-import net.minecraft.world.Container;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
+import net.satisfy.smoker.core.recipe.input.SmokerRecipeInput;
 import net.satisfy.smoker.core.registry.CommonRegistry;
+import net.satisfy.smoker.core.registry.TagsRegistry;
+import net.satisfy.smoker.core.util.SmokerFoodData;
 import org.jetbrains.annotations.NotNull;
 
-public class SmokerModifierRecipe implements Recipe<Container> {
-    private final ResourceLocation id;
-    private final Ingredient smokingMaterial;
+public class SmokerModifierRecipe implements Recipe<SmokerRecipeInput> {
+    private final Item smokingMaterial;
     private final double saturation;
     private final double nutrition;
     private final int craftingTime;
@@ -27,8 +31,7 @@ public class SmokerModifierRecipe implements Recipe<Container> {
     private final String effectName;
     private final int effectDuration;
 
-    public SmokerModifierRecipe(ResourceLocation id, Ingredient smokingMaterial, double saturation, double nutrition, int craftingTime, int healAmount, String effectName, int effectDuration) {
-        this.id = id;
+    public SmokerModifierRecipe(Item smokingMaterial, double saturation, double nutrition, int craftingTime, int healAmount, String effectName, int effectDuration) {
         this.smokingMaterial = smokingMaterial;
         this.saturation = saturation;
         this.nutrition = nutrition;
@@ -39,27 +42,29 @@ public class SmokerModifierRecipe implements Recipe<Container> {
     }
 
     @Override
-    public boolean matches(Container container, Level level) {
-        ItemStack smokingMaterialStack = container.getItem(0);
-        ItemStack inputStack = container.getItem(1);
-        return !smokingMaterialStack.isEmpty() && smokingMaterial.test(smokingMaterialStack) && !inputStack.isEmpty();
+    public boolean matches(SmokerRecipeInput input, Level level) {
+        ItemStack smokingMaterialStack = input.smokingMaterial();
+        ItemStack foodStack = input.food();
+        return !smokingMaterialStack.isEmpty() && smokingMaterialStack.is(smokingMaterial)
+                && !foodStack.isEmpty() && TagsRegistry.isSmokable(foodStack);
     }
 
     @Override
-    public @NotNull ItemStack assemble(Container container, RegistryAccess registryAccess) {
-        ItemStack input = container.getItem(1);
-        if (input.isEmpty() || !input.isEdible()) return ItemStack.EMPTY;
-        ItemStack result = input.copy();
+    public @NotNull ItemStack assemble(SmokerRecipeInput input, HolderLookup.Provider provider) {
+        ItemStack food = input.food();
+        if (food.isEmpty() || !food.has(DataComponents.FOOD)) return ItemStack.EMPTY;
+        ItemStack result = food.copy();
         result.setCount(1);
-        CompoundTag tag = result.getOrCreateTag();
-        tag.putDouble("smoker_saturation", getSaturation());
-        tag.putDouble("smoker_nutrition", getNutrition());
-        tag.putInt("smoker_heal_amount", getHealAmount());
+        CompoundTag tag = SmokerFoodData.getOrCreateTag(result);
+        tag.putDouble(SmokerFoodData.SATURATION_KEY, getSaturation());
+        tag.putDouble(SmokerFoodData.NUTRITION_KEY, getNutrition());
+        tag.putInt(SmokerFoodData.HEAL_KEY, getHealAmount());
 
         if (hasEffect()) {
-            tag.putString("smoker_effect", getEffectName());
-            tag.putInt("smoker_effect_duration", getEffectDuration());
+            tag.putString(SmokerFoodData.EFFECT_KEY, getEffectName());
+            tag.putInt(SmokerFoodData.EFFECT_DURATION_KEY, getEffectDuration());
         }
+        SmokerFoodData.applyTag(result, tag);
 
         return result;
     }
@@ -70,13 +75,8 @@ public class SmokerModifierRecipe implements Recipe<Container> {
     }
 
     @Override
-    public @NotNull ItemStack getResultItem(RegistryAccess registryAccess) {
+    public @NotNull ItemStack getResultItem(HolderLookup.Provider provider) {
         return ItemStack.EMPTY;
-    }
-
-    @Override
-    public @NotNull ResourceLocation getId() {
-        return id;
     }
 
     @Override
@@ -87,7 +87,10 @@ public class SmokerModifierRecipe implements Recipe<Container> {
     @Override
     public @NotNull RecipeType<?> getType() {
         return CommonRegistry.SMOKER_RECIPE_TYPE.get();
+    }
 
+    public Item getSmokingMaterial() {
+        return smokingMaterial;
     }
 
     public double getSaturation() {
@@ -118,25 +121,33 @@ public class SmokerModifierRecipe implements Recipe<Container> {
         return effectDuration;
     }
 
+    private record Modifiers(double saturation, double nutrition, int healAmount, String effectName, int effectDuration) {
+        static final MapCodec<Modifiers> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+                Codec.DOUBLE.fieldOf("saturation").forGetter(Modifiers::saturation),
+                Codec.DOUBLE.fieldOf("nutrition").forGetter(Modifiers::nutrition),
+                Codec.INT.optionalFieldOf("heal_amount", 0).forGetter(Modifiers::healAmount),
+                Codec.STRING.optionalFieldOf("effect", "").forGetter(Modifiers::effectName),
+                Codec.INT.optionalFieldOf("effect_duration", 0).forGetter(Modifiers::effectDuration)
+        ).apply(instance, Modifiers::new));
+    }
+
     public static class Serializer implements RecipeSerializer<SmokerModifierRecipe> {
-        @Override
-        public @NotNull SmokerModifierRecipe fromJson(ResourceLocation id, JsonObject json) {
-            String material = GsonHelper.getAsString(json, "material");
-            Ingredient smokingMaterial = Ingredient.of(new ItemStack(BuiltInRegistries.ITEM.get(new ResourceLocation(material))));
-            JsonObject mod = GsonHelper.getAsJsonObject(json, "modifiers");
-            double saturation = GsonHelper.getAsDouble(mod, "saturation");
-            double nutrition = GsonHelper.getAsDouble(mod, "nutrition");
-            int craftingTime = GsonHelper.getAsInt(json, "crafting_time");
-            int healAmount = GsonHelper.getAsInt(mod, "heal_amount", 0);
-            String effectName = mod.has("effect") ? GsonHelper.getAsString(mod, "effect") : "";
-            int effectDuration = mod.has("effect_duration") ? GsonHelper.getAsInt(mod, "effect_duration") : 0;
+        private static final Codec<Item> ITEM_CODEC = ResourceLocation.CODEC.xmap(BuiltInRegistries.ITEM::get, BuiltInRegistries.ITEM::getKey);
 
-            return new SmokerModifierRecipe(id, smokingMaterial, saturation, nutrition, craftingTime, healAmount, effectName, effectDuration);
-        }
+        public static final MapCodec<SmokerModifierRecipe> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+                ITEM_CODEC.fieldOf("material").forGetter(SmokerModifierRecipe::getSmokingMaterial),
+                Modifiers.CODEC.fieldOf("modifiers").forGetter(recipe -> new Modifiers(recipe.getSaturation(), recipe.getNutrition(), recipe.getHealAmount(), recipe.getEffectName(), recipe.getEffectDuration())),
+                Codec.INT.fieldOf("crafting_time").forGetter(SmokerModifierRecipe::getCraftingTime)
+        ).apply(instance, (material, modifiers, craftingTime) -> new SmokerModifierRecipe(
+                material, modifiers.saturation(), modifiers.nutrition(), craftingTime, modifiers.healAmount(), modifiers.effectName(), modifiers.effectDuration()
+        )));
 
-        @Override
-        public @NotNull SmokerModifierRecipe fromNetwork(ResourceLocation id, FriendlyByteBuf buf) {
-            Ingredient smokingMaterial = Ingredient.fromNetwork(buf);
+        public static final StreamCodec<RegistryFriendlyByteBuf, SmokerModifierRecipe> STREAM_CODEC = StreamCodec.of(
+                Serializer::toNetwork, Serializer::fromNetwork
+        );
+
+        public static @NotNull SmokerModifierRecipe fromNetwork(RegistryFriendlyByteBuf buf) {
+            Item material = BuiltInRegistries.ITEM.get(buf.readResourceLocation());
             double saturation = buf.readDouble();
             double nutrition = buf.readDouble();
             int craftingTime = buf.readVarInt();
@@ -144,18 +155,27 @@ public class SmokerModifierRecipe implements Recipe<Container> {
             String effectName = buf.readUtf();
             int effectDuration = buf.readVarInt();
 
-            return new SmokerModifierRecipe(id, smokingMaterial, saturation, nutrition, craftingTime, healAmount, effectName, effectDuration);
+            return new SmokerModifierRecipe(material, saturation, nutrition, craftingTime, healAmount, effectName, effectDuration);
         }
 
-        @Override
-        public void toNetwork(FriendlyByteBuf buf, SmokerModifierRecipe recipe) {
-            recipe.smokingMaterial.toNetwork(buf);
+        public static void toNetwork(RegistryFriendlyByteBuf buf, SmokerModifierRecipe recipe) {
+            buf.writeResourceLocation(BuiltInRegistries.ITEM.getKey(recipe.smokingMaterial));
             buf.writeDouble(recipe.saturation);
             buf.writeDouble(recipe.nutrition);
             buf.writeVarInt(recipe.craftingTime);
             buf.writeVarInt(recipe.healAmount);
             buf.writeUtf(recipe.effectName);
             buf.writeVarInt(recipe.effectDuration);
+        }
+
+        @Override
+        public @NotNull MapCodec<SmokerModifierRecipe> codec() {
+            return CODEC;
+        }
+
+        @Override
+        public @NotNull StreamCodec<RegistryFriendlyByteBuf, SmokerModifierRecipe> streamCodec() {
+            return STREAM_CODEC;
         }
     }
 }

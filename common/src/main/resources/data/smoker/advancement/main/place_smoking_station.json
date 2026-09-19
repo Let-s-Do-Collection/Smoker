@@ -1,0 +1,37 @@
+{
+  "parent": "smoker:main/craft_smoking_station",
+  "display": {
+    "icon": {
+      "id": "smoker:improved_smoker",
+      "count": 1
+    },
+    "title": {
+      "translate": "smoker.advancement.place_smoking_station"
+    },
+    "description": {
+      "translate": "smoker.advancement.place_smoking_station.desc"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "placed_smoking_station": {
+      "trigger": "minecraft:placed_block",
+      "conditions": {
+        "location": [
+          {
+            "block": "smoker:improved_smoker",
+            "condition": "minecraft:block_state_property"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "placed_smoking_station"
+    ]
+  ]
+}

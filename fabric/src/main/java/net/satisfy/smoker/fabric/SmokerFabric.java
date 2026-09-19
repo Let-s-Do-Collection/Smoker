@@ -1,20 +1,15 @@
 package net.satisfy.smoker.fabric;
 
-import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroupEntries;
-import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
-import net.minecraft.world.item.CreativeModeTabs;
-import net.satisfy.smoker.Smoker;
+import me.shedaniel.autoconfig.AutoConfig;
+import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 import net.fabricmc.api.ModInitializer;
-import net.satisfy.smoker.core.registry.CommonRegistry;
+import net.satisfy.smoker.Smoker;
+import net.satisfy.smoker.fabric.core.config.SmokerFabricConfig;
 
 public class SmokerFabric implements ModInitializer {
     @Override
     public void onInitialize() {
+        AutoConfig.register(SmokerFabricConfig.class, GsonConfigSerializer::new);
         Smoker.init();
-        ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.FUNCTIONAL_BLOCKS).register(SmokerFabric::addItemsToCreativeTab);
-    }
-
-    private static void addItemsToCreativeTab(FabricItemGroupEntries entries) {
-        entries.accept(CommonRegistry.IMPROVED_SMOKER.get().asItem());
     }
 }

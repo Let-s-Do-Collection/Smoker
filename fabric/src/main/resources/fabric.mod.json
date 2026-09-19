@@ -2,16 +2,16 @@
   "schemaVersion": 1,
   "id": "smoker",
   "version": "${version}",
-  "name": "Smoker",
-  "description": "This is an example description! Tell everyone what your mod is about!",
+  "name": "[Let's Do] Smoker",
+  "description": "The Smoker - an often overlooked, rarely used, yet versatile block. Feed the new Smoking Station different types of wood to smoke your food for bonus saturation, nutrition, healing or potion effects. Cook, smoke, and discover new possibilities!",
   "authors": [
-    "Me!"
+    "satisfy"
   ],
   "contact": {
-    "homepage": "https://fabricmc.net/",
-    "sources": "https://github.com/FabricMC/fabric-example-mod"
+    "issues": "https://github.com/satisfyu/Let-s-Do-Hub",
+    "sources": "https://github.com/satisfyu/Smoker"
   },
-  "license": "Insert License Here",
+  "license": "Custom",
   "icon": "pack.png",
   "environment": "*",
   "entrypoints": {
@@ -20,6 +20,15 @@
     ],
     "client": [
       "net.satisfy.smoker.fabric.client.SmokerClientFabric"
+    ],
+    "modmenu": [
+      "net.satisfy.smoker.fabric.core.config.ModMenu"
+    ],
+    "rei_client": [
+      "net.satisfy.smoker.fabric.core.rei.SmokerREIClientPluginFabric"
+    ],
+    "jei_mod_plugin": [
+      "net.satisfy.smoker.core.compat.jei.SmokerJEIPlugin"
     ]
   },
   "mixins": [
@@ -27,7 +36,8 @@
   ],
   "depends": {
     "fabric": "*",
-    "minecraft": ">=1.20.1",
-    "architectury": ">=9.1.12"
+    "minecraft": ">=1.21.1",
+    "architectury": ">=13.0.8",
+    "cloth-config": "*"
   }
 }

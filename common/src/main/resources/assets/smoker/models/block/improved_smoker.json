@@ -1,11 +1,12 @@
 {
+	"format_version": "26.3",
 	"credit": "Made by Satisfy",
 	"textures": {
-		"0": "smoker:block/improved_smoker_front_off",
+		"0": "smoker:block/improved_smoker_front",
 		"1": "smoker:block/improved_smoker_bottom",
 		"2": "smoker:block/improved_smoker_side",
 		"3": "smoker:block/improved_smoker_top",
-		"particle": "smoker:block/improved_smoker_front_off"
+		"particle": "smoker:block/improved_smoker_front"
 	},
 	"elements": [
 		{
@@ -37,7 +38,7 @@
 			"scale": [0.4, 0.4, 0.4]
 		},
 		"firstperson_lefthand": {
-			"rotation": [0, 225, 0],
+			"rotation": [0, -135, 0],
 			"scale": [0.4, 0.4, 0.4]
 		},
 		"ground": {
@@ -45,7 +46,7 @@
 			"scale": [0.25, 0.25, 0.25]
 		},
 		"gui": {
-			"rotation": [30, 225, 0],
+			"rotation": [30, -135, 0],
 			"scale": [0.625, 0.625, 0.625]
 		},
 		"fixed": {

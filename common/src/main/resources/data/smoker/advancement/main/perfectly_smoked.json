@@ -1,0 +1,38 @@
+{
+  "parent": "smoker:main/smoke_first_food",
+  "display": {
+    "icon": {
+      "id": "minecraft:glowstone_dust",
+      "count": 1
+    },
+    "title": {
+      "translate": "smoker.advancement.perfectly_smoked"
+    },
+    "description": {
+      "translate": "smoker.advancement.perfectly_smoked.desc"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "perfectly_smoked_food": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "components": {
+              "minecraft:enchantment_glint_override": true
+            }
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "perfectly_smoked_food"
+    ]
+  ]
+}

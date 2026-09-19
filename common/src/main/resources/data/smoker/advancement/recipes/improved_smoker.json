@@ -1,0 +1,34 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "smoker:improved_smoker"
+    ]
+  },
+  "criteria": {
+    "has_smoker": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "minecraft:smoker"
+            ]
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "smoker:improved_smoker"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_smoker",
+      "has_the_recipe"
+    ]
+  ]
+}

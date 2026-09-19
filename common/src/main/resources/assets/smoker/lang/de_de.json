@@ -1,10 +1,23 @@
 {
-  "block.smoker.improved_smoker": "Verstärker Räucherofen",
+  "block.smoker.improved_smoker": "Räucherstation",
   "tooltip.smoker.item.processed": "Geräuchert:",
+  "tooltip.smoker.item.perfect": "Perfekt geräuchert",
   "tooltip.smoker.item.saturation": "Sättigungspunkte",
   "tooltip.smoker.item.nutrition": "Nahrungspunkte",
   "tooltip.smoker.item.heal": "Heilung",
   "tooltip.smoker.item.effect": "Effekt",
   "tooltip.smoker.block.current_smoking_wood": "Aktuelles Räucherholz: %s",
-  "tooltip.smoker.block.remaining_duration": "Restzeit: %s"
+  "tooltip.smoker.block.remaining_duration": "Restzeit: %s",
+  "smoker.advancement.root": "Spiel mit dem Feuer",
+  "smoker.advancement.root.desc": "Sammle etwas Holz, um mit dem Räuchern zu beginnen",
+  "smoker.advancement.craft_smoking_station": "Verstärktes Räuchern",
+  "smoker.advancement.craft_smoking_station.desc": "Baue eine Räucherstation",
+  "smoker.advancement.place_smoking_station": "Werkstatt eingerichtet",
+  "smoker.advancement.place_smoking_station.desc": "Platziere eine Räucherstation",
+  "smoker.advancement.smoke_first_food": "Langsam und stilvoll",
+  "smoker.advancement.smoke_first_food.desc": "Räuchere dein erstes Lebensmittel in einer Räucherstation",
+  "smoker.advancement.taste_of_something_special": "Ein Hauch von etwas Besonderem",
+  "smoker.advancement.taste_of_something_special.desc": "Räuchere Essen mit exotischem Holz, um es mit einem Trankeffekt zu versehen",
+  "smoker.advancement.perfectly_smoked": "Geduld zahlt sich aus",
+  "smoker.advancement.perfectly_smoked.desc": "Lasse ein geräuchertes Lebensmittel in einer brennenden Räucherstation ruhen, bis es perfekt geräuchert ist"
 }

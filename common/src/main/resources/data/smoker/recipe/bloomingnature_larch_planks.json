@@ -1,0 +1,23 @@
+{
+  "type": "smoker:smoker_modifier",
+  "material": "bloomingnature:larch_planks",
+  "modifiers": {
+    "saturation": 0.06,
+    "nutrition": 0.02
+  },
+  "crafting_time": 560,
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "bloomingnature"
+    }
+  ],
+  "fabric:load_conditions": [
+    {
+      "condition": "fabric:all_mods_loaded",
+      "values": [
+        "bloomingnature"
+      ]
+    }
+  ]
+}

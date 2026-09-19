@@ -1,5 +1,6 @@
 package net.satisfy.smoker.core.world.inventory;
 
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
@@ -95,7 +96,7 @@ public class ImprovedSmokerMenu extends AbstractContainerMenu {
             }
         } else if (index >= playerInvStart) {
             boolean moved = false;
-            if (stack.getItem().isEdible()) {
+            if (stack.has(DataComponents.FOOD)) {
                 moved = moveItemStackTo(stack, edibleSlot, edibleSlot + 1, false);
             } else if (stack.getItem().builtInRegistryHolder().is(ItemTags.PLANKS)) {
                 moved = moveItemStackTo(stack, plankSlot, plankSlot + 1, false);

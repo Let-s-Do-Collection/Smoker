@@ -3,7 +3,9 @@ package net.satisfy.smoker.fabric.client;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.satisfy.smoker.client.SmokerClient;
 import net.satisfy.smoker.core.util.SmokerTooltip;
 
@@ -17,7 +19,7 @@ public class SmokerClientFabric implements ClientModInitializer {
         ItemTooltipCallback.EVENT.register(this::onItemTooltip);
     }
 
-    private void onItemTooltip(ItemStack stack, net.minecraft.world.item.TooltipFlag context, List<Component> tooltip) {
+    private void onItemTooltip(ItemStack stack, Item.TooltipContext context, TooltipFlag flag, List<Component> tooltip) {
         SmokerTooltip.addSmokerTooltip(stack, tooltip);
     }
 }

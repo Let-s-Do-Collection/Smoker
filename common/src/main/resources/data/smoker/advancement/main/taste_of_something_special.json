@@ -1,0 +1,77 @@
+{
+  "parent": "smoker:main/smoke_first_food",
+  "display": {
+    "icon": {
+      "id": "minecraft:golden_apple",
+      "count": 1
+    },
+    "title": {
+      "translate": "smoker.advancement.taste_of_something_special"
+    },
+    "description": {
+      "translate": "smoker.advancement.taste_of_something_special.desc"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "effect_regeneration": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "predicates": {
+              "minecraft:custom_data": "{smoker_effect:\"minecraft:regeneration\"}"
+            }
+          }
+        ]
+      }
+    },
+    "effect_absorption": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "predicates": {
+              "minecraft:custom_data": "{smoker_effect:\"minecraft:absorption\"}"
+            }
+          }
+        ]
+      }
+    },
+    "effect_fire_resistance": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "predicates": {
+              "minecraft:custom_data": "{smoker_effect:\"minecraft:fire_resistance\"}"
+            }
+          }
+        ]
+      }
+    },
+    "effect_water_breathing": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "predicates": {
+              "minecraft:custom_data": "{smoker_effect:\"minecraft:water_breathing\"}"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "effect_regeneration",
+      "effect_absorption",
+      "effect_fire_resistance",
+      "effect_water_breathing"
+    ]
+  ]
+}

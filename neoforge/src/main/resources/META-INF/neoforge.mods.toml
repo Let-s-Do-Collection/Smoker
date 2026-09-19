@@ -1,0 +1,38 @@
+modLoader = "javafml"
+loaderVersion = "[4,)"
+issueTrackerURL = "https://github.com/satisfyu/Let-s-Do-Hub"
+license = "Custom"
+
+[[mixins]]
+config = "smoker-common.mixins.json"
+
+[[mods]]
+modId = "smoker"
+version = "${mod_version}"
+displayName = "[Let's Do] Smoker"
+authors = "satisfy"
+description = '''
+The Smoker - an often overlooked, rarely used, yet versatile block. Feed the new Smoking Station different types of wood to smoke your food for bonus saturation, nutrition, healing or potion effects. Cook, smoke, and discover new possibilities!
+'''
+logoFile = "pack.png"
+
+[[dependencies.smoker]]
+modId = "neoforge"
+mandatory = true
+versionRange = "[21.1.0,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.smoker]]
+modId = "minecraft"
+mandatory = true
+versionRange = "[1.21.1,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.smoker]]
+modId = "architectury"
+mandatory = true
+versionRange = "[13.0.0,)"
+ordering = "AFTER"
+side = "BOTH"

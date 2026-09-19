@@ -8,6 +8,7 @@ import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.satisfy.smoker.core.world.level.block.entity.ImprovedSmokerBlockEntity;
+import net.satisfy.smoker.platform.PlatformHelper;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -18,11 +19,13 @@ public abstract class SmokerBlockMixin {
 
     @Inject(method = "newBlockEntity", at = @At("HEAD"), cancellable = true)
     private void replaceBlockEntity(BlockPos pos, BlockState state, CallbackInfoReturnable<BlockEntity> cir) {
+        if (!PlatformHelper.isVanillaSmokerReplacementEnabled()) return;
         cir.setReturnValue(new ImprovedSmokerBlockEntity(pos, state));
     }
 
     @Inject(method = "getTicker", at = @At("HEAD"), cancellable = true)
     private void overrideTicker(Level level, BlockState state, BlockEntityType<?> type, CallbackInfoReturnable<BlockEntityTicker<?>> cir) {
+        if (!PlatformHelper.isVanillaSmokerReplacementEnabled()) return;
         if (type == net.satisfy.smoker.core.registry.CommonRegistry.IMPROVED_SMOKER_ENTITY.get()) {
             cir.setReturnValue((lvl, pos, blockState, be) -> {
                 if (be instanceof ImprovedSmokerBlockEntity smoker) {

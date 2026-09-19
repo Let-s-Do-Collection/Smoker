@@ -1,0 +1,49 @@
+{
+  "replace": false,
+  "values": [
+    {
+      "id": "#c:chocolate",
+      "required": false
+    },
+    {
+      "id": "bakery:chocolate_bread",
+      "required": false
+    },
+    {
+      "id": "bakery:chocolate_cake_slice",
+      "required": false
+    },
+    {
+      "id": "bakery:chocolate_gateau_slice",
+      "required": false
+    },
+    {
+      "id": "bakery:chocolate_glazed_cookie",
+      "required": false
+    },
+    {
+      "id": "bakery:chocolate_tart_slice",
+      "required": false
+    },
+    {
+      "id": "bakery:chocolate_jam",
+      "required": false
+    },
+    {
+      "id": "bakery:chocolate_cake",
+      "required": false
+    },
+    {
+      "id": "bakery:chocolate_gateau",
+      "required": false
+    },
+    {
+      "id": "bakery:chocolate_tart",
+      "required": false
+    },
+    {
+      "id": "bakery:chocolate_cookie_block",
+      "required": false
+    }
+  ]
+}

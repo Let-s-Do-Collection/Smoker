@@ -10,7 +10,7 @@ import net.satisfy.smoker.core.world.inventory.ImprovedSmokerMenu;
 import net.satisfy.smoker.core.util.SmokerIdentifier;
 
 public class ImprovedSmokerScreen extends AbstractContainerScreen<ImprovedSmokerMenu> {
-    public static final ResourceLocation BG = new SmokerIdentifier("textures/gui/improved_smoker.png");
+    public static final ResourceLocation BG = SmokerIdentifier.id("textures/gui/improved_smoker.png");
     private int drawX;
     private int drawY;
 
@@ -29,7 +29,9 @@ public class ImprovedSmokerScreen extends AbstractContainerScreen<ImprovedSmoker
 
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        renderBackground(guiGraphics);
+        // Screen.render() already calls renderBackground(...) itself (which in turn calls our
+        // renderBg()) - calling it again here doubled the dark transparent overlay and drew the
+        // GUI texture/arrow/burn icon twice.
         super.render(guiGraphics, mouseX, mouseY, partialTick);
         renderTooltip(guiGraphics, mouseX, mouseY);
     }

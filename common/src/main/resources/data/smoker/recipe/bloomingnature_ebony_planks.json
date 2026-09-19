@@ -1,0 +1,25 @@
+{
+  "type": "smoker:smoker_modifier",
+  "material": "bloomingnature:ebony_planks",
+  "modifiers": {
+    "saturation": 0.02,
+    "nutrition": 0.02,
+    "effect": "minecraft:absorption",
+    "effect_duration": 60
+  },
+  "crafting_time": 1500,
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "bloomingnature"
+    }
+  ],
+  "fabric:load_conditions": [
+    {
+      "condition": "fabric:all_mods_loaded",
+      "values": [
+        "bloomingnature"
+      ]
+    }
+  ]
+}

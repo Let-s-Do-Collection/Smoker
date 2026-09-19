@@ -1,0 +1,36 @@
+{
+  "display": {
+    "icon": {
+      "id": "smoker:improved_smoker",
+      "count": 1
+    },
+    "title": {
+      "translate": "smoker.advancement.root"
+    },
+    "description": {
+      "translate": "smoker.advancement.root.desc"
+    },
+    "frame": "task",
+    "show_toast": false,
+    "announce_to_chat": false,
+    "hidden": false,
+    "background": "smoker:textures/block/improved_smoker_side.png"
+  },
+  "criteria": {
+    "has_planks": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "#minecraft:planks"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_planks"
+    ]
+  ]
+}

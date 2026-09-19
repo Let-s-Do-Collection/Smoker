@@ -1,11 +1,13 @@
 package net.satisfy.smoker.core.registry;
 
+import dev.architectury.registry.CreativeTabRegistry;
 import dev.architectury.registry.registries.DeferredRegister;
 import dev.architectury.registry.registries.RegistrySupplier;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -31,7 +33,7 @@ public class CommonRegistry {
     private static final DeferredRegister<RecipeType<?>> RECIPE_TYPES = DeferredRegister.create(Smoker.MOD_ID, Registries.RECIPE_TYPE);
     private static final DeferredRegister<MenuType<?>> MENU_TYPES = DeferredRegister.create(Smoker.MOD_ID, Registries.MENU);
 
-    public static final RegistrySupplier<Block> IMPROVED_SMOKER = registerWithItem("improved_smoker", () -> new ImprovedSmokerBlock(BlockBehaviour.Properties.copy(Blocks.STONE)));
+    public static final RegistrySupplier<Block> IMPROVED_SMOKER = registerWithItem("improved_smoker", () -> new ImprovedSmokerBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.STONE)));
 
     public static final RegistrySupplier<BlockEntityType<ImprovedSmokerBlockEntity>> IMPROVED_SMOKER_ENTITY = registerBlockEntity(() -> BlockEntityType.Builder.of(ImprovedSmokerBlockEntity::new, IMPROVED_SMOKER.get()).build(null));
 
@@ -51,6 +53,8 @@ public class CommonRegistry {
         RECIPE_SERIALIZERS.register();
         RECIPE_TYPES.register();
         MENU_TYPES.register();
+
+        CreativeTabRegistry.append(CreativeModeTabs.FUNCTIONAL_BLOCKS, IMPROVED_SMOKER);
     }
 
     private static <T extends Block> RegistrySupplier<T> registerWithItem(String name, Supplier<T> block) {
@@ -60,15 +64,15 @@ public class CommonRegistry {
     }
 
     private static <T extends Block> RegistrySupplier<T> registerBlock(String name, Supplier<T> block) {
-        return BLOCKS.register(new SmokerIdentifier(name), block);
+        return BLOCKS.register(SmokerIdentifier.id(name), block);
     }
 
     private static <T extends Item> void registerItem(String name, Supplier<T> itemSupplier) {
-        ITEMS.register(new SmokerIdentifier(name), itemSupplier);
+        ITEMS.register(SmokerIdentifier.id(name), itemSupplier);
     }
 
     private static <T extends BlockEntityType<?>> RegistrySupplier<T> registerBlockEntity(final Supplier<T> type) {
-        return BLOCK_ENTITY_TYPES.register(new SmokerIdentifier("improved_smoker_entity"), type);
+        return BLOCK_ENTITY_TYPES.register(SmokerIdentifier.id("improved_smoker_entity"), type);
     }
 
     private static <T extends Recipe<?>> RegistrySupplier<RecipeSerializer<T>> createRecipeSerializer(Supplier<RecipeSerializer<T>> serializer) {

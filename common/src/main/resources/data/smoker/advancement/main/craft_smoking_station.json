@@ -1,0 +1,45 @@
+{
+  "parent": "smoker:main/root",
+  "display": {
+    "icon": {
+      "id": "smoker:improved_smoker",
+      "count": 1
+    },
+    "title": {
+      "translate": "smoker.advancement.craft_smoking_station"
+    },
+    "description": {
+      "translate": "smoker.advancement.craft_smoking_station.desc"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "has_smoking_station": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "smoker:improved_smoker"
+            ]
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "smoker:improved_smoker"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_smoking_station",
+      "has_the_recipe"
+    ]
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "type": "smoker:smoker_modifier",
+  "material": "bloomingnature:cactus_planks",
+  "modifiers": {
+    "saturation": 0.02,
+    "nutrition": 0.02,
+    "effect": "minecraft:fire_resistance",
+    "effect_duration": 300
+  },
+  "crafting_time": 900,
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "bloomingnature"
+    }
+  ],
+  "fabric:load_conditions": [
+    {
+      "condition": "fabric:all_mods_loaded",
+      "values": [
+        "bloomingnature"
+      ]
+    }
+  ]
+}
