@@ -19,4 +19,8 @@ public class PlatformHelperImpl {
     public static boolean isEverythingSmokable() {
         return AutoConfig.getConfigHolder(SmokerFabricConfig.class).getConfig().everythingSmokable;
     }
+
+    public static boolean isColoredSmokeEnabled() {
+        return AutoConfig.getConfigHolder(SmokerFabricConfig.class).getConfig().coloredSmoke;
+    }
 }

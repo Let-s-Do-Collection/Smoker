@@ -2,16 +2,10 @@
 
 **Initial Release**
 
-**Added**
-* The Smoking Station, a new block and block entity that expands the vanilla Smoker with new smoking mechanics
-* Smoker Modifier recipes that allow different types of wood to influence the saturation and nutrition of smoked food, with select wood types also granting healing or potion effects
-* Recipes for all vanilla plank types, plus wood types added by other Let's Do mods when installed (BloomingNature, AlpineWhispers, Meadow, Vinery)
-* Perfectly Smoked results for food left in a lit Smoking Station for a configurable amount of time, granting a small saturation/nutrition bonus and a glint
-* Configurable `replaceVanillaSmoker` option to determine whether the vanilla Smoker is replaced by the Smoking Station
-* Configurable `everythingSmokable` option to bypass the not-smokable tag entirely and allow any food to be smoked
-* `smoker:not_smokable` item tag for foods that should not be processed by the Smoking Station, with datapack support for extending the tag
-* JEI and REI integration for browsing Smoking Station recipes and the modifiers provided by different wood types
-* A crafting recipe for the Smoking Station using a vanilla Smoker reinforced with 8 planks
-* The "Playing with Fire" advancement tree, guiding players through gathering wood, crafting and placing a Smoking Station, smoking food, discovering exotic wood effects and creating Perfectly Smoked food
+Welcome to Smoker! The vanilla Smoker finally gets a real purpose: feed it different types of wood and it changes how your food turns out. Common woods keep it simple with a saturation and nutrition boost, while rarer woods - Nether wood, Acacia, Dark Oak and more - go further, adding healing or a potion effect on top. Let a finished item rest in a lit Smoking Station and it can come out Perfectly Smoked for a little extra, or just take it whenever you like, no rush either way.
+
+Smoking is a one-way trip, not a repeatable process - once something's smoked, it's done, not an ingredient for another pass with a different wood.
+
+Everything's configurable, from whether the vanilla Smoker gets replaced at all to which foods are allowed anywhere near the fire. Recognizes wood types from other Let's Do mods if you have them installed, and comes with JEI/REI support so you always know what each wood does.
 
 ***

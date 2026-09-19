@@ -1,8 +1,8 @@
 {
-  "parent": "smoker:main/craft_smoking_station",
+  "parent": "smoker:main/root",
   "display": {
     "icon": {
-      "id": "smoker:improved_smoker",
+      "id": "smoker:smoking_station",
       "count": 1
     },
     "title": {
@@ -22,7 +22,7 @@
       "conditions": {
         "location": [
           {
-            "block": "smoker:improved_smoker",
+            "block": "smoker:smoking_station",
             "condition": "minecraft:block_state_property"
           }
         ]

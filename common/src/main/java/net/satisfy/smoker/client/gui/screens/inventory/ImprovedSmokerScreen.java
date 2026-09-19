@@ -5,14 +5,11 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.item.ItemStack;
 import net.satisfy.smoker.core.world.inventory.ImprovedSmokerMenu;
 import net.satisfy.smoker.core.util.SmokerIdentifier;
 
 public class ImprovedSmokerScreen extends AbstractContainerScreen<ImprovedSmokerMenu> {
-    public static final ResourceLocation BG = SmokerIdentifier.id("textures/gui/improved_smoker.png");
-    private int drawX;
-    private int drawY;
+    public static final ResourceLocation BG = SmokerIdentifier.id("textures/gui/smoking_station.png");
 
     public ImprovedSmokerScreen(ImprovedSmokerMenu handler, Inventory inventory, Component title) {
         super(handler, inventory, title);
@@ -40,64 +37,25 @@ public class ImprovedSmokerScreen extends AbstractContainerScreen<ImprovedSmoker
     protected void renderBg(GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
         guiGraphics.blit(BG, leftPos, topPos, 0, 0, imageWidth, imageHeight);
 
-        renderProgressArrow(guiGraphics, mouseX, mouseY);
-        renderBurnIcon(guiGraphics, mouseX, mouseY);
+        renderProgressArrow(guiGraphics);
+        renderBurnIcon(guiGraphics);
     }
 
-    protected void renderBurnIcon(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        int smokingSlotIndex = 2;
-        ItemStack smokingStack = menu.getSlot(smokingSlotIndex).getItem();
-
+    protected void renderBurnIcon(GuiGraphics guiGraphics) {
         if (menu.isLit()) {
             guiGraphics.blit(BG, leftPos + 42, topPos + 36, 176, 0, 46, 32);
         }
-
-        if (isMouseOverBurnIcon(mouseX, mouseY) && !smokingStack.isEmpty()) {
-            Component tooltip = getSmokingTooltip(smokingStack);
-            guiGraphics.renderTooltip(this.font, tooltip, mouseX, mouseY);
-        }
     }
 
-
-    private boolean isMouseOverBurnIcon(int mouseX, int mouseY) {
-        int burnIconX = leftPos + 56;
-        int burnIconY = topPos + 36;
-        return mouseX >= burnIconX && mouseX <= burnIconX + 14 &&
-                mouseY >= burnIconY && mouseY <= burnIconY + 14;
-    }
-
-    private Component getSmokingTooltip(ItemStack smokingStack) {
-        return Component.translatable("tooltip.smoker.block.current_smoking_wood", smokingStack.getHoverName());
-    }
-
-    protected void renderProgressArrow(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    protected void renderProgressArrow(GuiGraphics guiGraphics) {
         int progressHeight = menu.getSmokeXProgress();
         if (progressHeight > 0) {
-            drawX = leftPos + 60;
-            drawY = topPos + 23 + (10 - progressHeight);
+            int drawX = 60;
+            int drawY = 23 + (10 - progressHeight);
             int textureX = 176;
             int textureY = 32 + (10 - progressHeight);
             int width = 10;
-            guiGraphics.blit(BG, drawX, drawY, textureX, textureY, width, progressHeight);
+            guiGraphics.blit(BG, leftPos + drawX, topPos + drawY, textureX, textureY, width, progressHeight);
         }
-        if (isMouseOverArrow(mouseX, mouseY)) {
-            int remainingTicks = menu.getRemainingSmokeTime();
-            int totalSeconds = remainingTicks / 20;
-            int hours = totalSeconds / 3600;
-            int minutes = (totalSeconds % 3600) / 60;
-            int seconds = totalSeconds % 60;
-            String formattedTime = String.format("%02d:%02d:%02d", hours, minutes, seconds);
-            Component tooltip = Component.translatable("tooltip.smoker.block.remaining_duration", formattedTime);
-            guiGraphics.renderTooltip(this.font, tooltip, mouseX, mouseY);
-        }
-    }
-
-    private boolean isMouseOverArrow(int mouseX, int mouseY) {
-        int arrowX = leftPos + drawX;
-        int arrowY = topPos + drawY;
-        int arrowWidth = 25;
-        int arrowHeight = 10;
-        return mouseX >= arrowX && mouseX <= arrowX + arrowWidth &&
-                mouseY >= arrowY && mouseY <= arrowY + arrowHeight;
     }
 }

@@ -2,7 +2,7 @@
   "parent": "minecraft:recipes/root",
   "rewards": {
     "recipes": [
-      "smoker:improved_smoker"
+      "smoker:smoking_station"
     ]
   },
   "criteria": {
@@ -21,7 +21,7 @@
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipe": "smoker:improved_smoker"
+        "recipe": "smoker:smoking_station"
       }
     }
   },

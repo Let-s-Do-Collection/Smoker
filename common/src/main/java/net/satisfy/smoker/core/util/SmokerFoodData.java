@@ -31,6 +31,17 @@ public final class SmokerFoodData {
     }
 
     /**
+     * Whether this item has already been smoked once (regardless of which path produced it - the
+     * wood-recipe path or the plain default fallback both set this). Used to keep the Smoking
+     * Station a one-way step from "ready-to-eat food" to "smoked food", not a repeatable process
+     * for restacking bonuses from multiple woods onto the same item.
+     */
+    public static boolean isProcessed(ItemStack stack) {
+        CompoundTag tag = getTag(stack);
+        return tag != null && tag.getBoolean(PROCESSED_KEY);
+    }
+
+    /**
      * Toggles the "perfectly smoked" state reached by letting a finished item rest in the
      * lit smoker for a while: a small saturation/nutrition bonus on display (see PERFECT_BONUS_MULTIPLIER)
      * plus an enchantment glint. Never applied to un-smoked items, and reverting only ever falls

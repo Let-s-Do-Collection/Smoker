@@ -1,7 +1,7 @@
 {
   "display": {
     "icon": {
-      "id": "smoker:improved_smoker",
+      "id": "minecraft:oak_planks",
       "count": 1
     },
     "title": {
@@ -14,23 +14,17 @@
     "show_toast": false,
     "announce_to_chat": false,
     "hidden": false,
-    "background": "smoker:textures/block/improved_smoker_side.png"
+    "background": "minecraft:textures/block/oak_planks.png"
   },
   "criteria": {
-    "has_planks": {
+    "seeds": {
       "trigger": "minecraft:inventory_changed",
-      "conditions": {
-        "items": [
-          {
-            "items": "#minecraft:planks"
-          }
-        ]
-      }
+      "conditions": {}
     }
   },
   "requirements": [
     [
-      "has_planks"
+      "seeds"
     ]
   ]
 }

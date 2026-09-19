@@ -18,4 +18,8 @@ public class PlatformHelperImpl {
     public static boolean isEverythingSmokable() {
         return SmokerNeoForgeConfig.everythingSmokable;
     }
+
+    public static boolean isColoredSmokeEnabled() {
+        return SmokerNeoForgeConfig.coloredSmoke;
+    }
 }

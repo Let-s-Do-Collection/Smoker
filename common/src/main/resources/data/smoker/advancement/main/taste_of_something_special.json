@@ -2,7 +2,7 @@
   "parent": "smoker:main/smoke_first_food",
   "display": {
     "icon": {
-      "id": "minecraft:golden_apple",
+      "id": "minecraft:jungle_log",
       "count": 1
     },
     "title": {

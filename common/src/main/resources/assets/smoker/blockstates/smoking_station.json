@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "smoker:block/smoking_station",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "smoker:block/smoking_station"
+    },
+    "facing=south": {
+      "model": "smoker:block/smoking_station",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "smoker:block/smoking_station",
+      "y": 270
+    }
+  }
+}

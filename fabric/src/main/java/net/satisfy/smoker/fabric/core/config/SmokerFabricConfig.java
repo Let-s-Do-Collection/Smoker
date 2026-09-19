@@ -11,6 +11,8 @@ public class SmokerFabricConfig implements ConfigData {
 
     public boolean everythingSmokable = false;
 
+    public boolean coloredSmoke = true;
+
     @ConfigEntry.BoundedDiscrete(min = 1, max = 3600)
     public int perfectSmokingDelaySeconds = 720;
 

@@ -22,4 +22,9 @@ public abstract class PlatformHelper {
     public static boolean isEverythingSmokable() {
         throw new AssertionError();
     }
+
+    @ExpectPlatform
+    public static boolean isColoredSmokeEnabled() {
+        throw new AssertionError();
+    }
 }

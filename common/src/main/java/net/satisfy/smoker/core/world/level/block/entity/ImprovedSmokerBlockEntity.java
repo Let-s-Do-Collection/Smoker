@@ -26,6 +26,7 @@ import net.satisfy.smoker.core.recipe.input.SmokerRecipeInput;
 import net.satisfy.smoker.core.registry.CommonRegistry;
 import net.satisfy.smoker.core.registry.TagsRegistry;
 import net.satisfy.smoker.core.util.SmokerFoodData;
+import net.satisfy.smoker.core.util.SmokerSmokeColors;
 import net.satisfy.smoker.core.world.inventory.ImplementedInventory;
 import net.satisfy.smoker.core.world.inventory.ImprovedSmokerMenu;
 import net.satisfy.smoker.core.world.level.block.ImprovedSmokerBlock;
@@ -44,6 +45,13 @@ public class ImprovedSmokerBlockEntity extends BlockEntity implements Implemente
     private int totalSmokingTime = 0;
     private int litValue = 0;
     private int restTime = 0;
+    /**
+     * Cosmetic smoke-color category of the wood currently burning. Persisted (unlike a purely
+     * derived value would need to be) so it doesn't reset to NORMAL on world reload and briefly
+     * downgrade the block state's already-correct color back to plain grey smoke until the next
+     * material ignites.
+     */
+    private int smokeKind = SmokerSmokeColors.NORMAL;
 
     private SmokerModifierRecipe currentRecipe;
     private NonNullList<ItemStack> inventory;
@@ -89,6 +97,7 @@ public class ImprovedSmokerBlockEntity extends BlockEntity implements Implemente
         burnTime = nbt.getInt("BurnTime");
         litValue = nbt.getInt("LitValue");
         restTime = nbt.getInt("RestTime");
+        smokeKind = nbt.getInt("SmokeKind");
     }
 
     @Override
@@ -100,6 +109,7 @@ public class ImprovedSmokerBlockEntity extends BlockEntity implements Implemente
         nbt.putInt("BurnTime", burnTime);
         nbt.putInt("LitValue", litValue);
         nbt.putInt("RestTime", restTime);
+        nbt.putInt("SmokeKind", smokeKind);
     }
 
     @Override
@@ -117,11 +127,13 @@ public class ImprovedSmokerBlockEntity extends BlockEntity implements Implemente
             currentRecipe = world.getRecipeManager().getRecipeFor(CommonRegistry.SMOKER_RECIPE_TYPE.get(), input, world).map(RecipeHolder::value).orElse(null);
             if (currentRecipe != null) {
                 burnTime = MATERIAL_BURN_TIME;
+                smokeKind = SmokerSmokeColors.getCategory(getItem(SMOKINGMATERIAL_SLOT).getItem());
                 getItem(SMOKINGMATERIAL_SLOT).shrink(1);
                 dirty = true;
                 isLit = true;
             } else if (Ingredient.of(ItemTags.PLANKS).test(getItem(SMOKINGMATERIAL_SLOT))) {
                 burnTime = MATERIAL_BURN_TIME;
+                smokeKind = SmokerSmokeColors.getCategory(getItem(SMOKINGMATERIAL_SLOT).getItem());
                 getItem(SMOKINGMATERIAL_SLOT).shrink(1);
                 dirty = true;
                 isLit = true;
@@ -163,7 +175,19 @@ public class ImprovedSmokerBlockEntity extends BlockEntity implements Implemente
         if (updateMaturity(isLit)) {
             dirty = true;
         }
-        if (wasLit != isLit) {
+        if (!isLit) {
+            // Nothing burning any more - don't let a previous wood's color linger for next time.
+            smokeKind = SmokerSmokeColors.NORMAL;
+        }
+        // This tick() also runs for a vanilla minecraft:smoker hijacked via SmokerBlockMixin (when
+        // replaceVanillaSmoker is on, the default) - that block's state has no SMOKE_KIND property
+        // at all, so only touch it when actually ticking our own ImprovedSmokerBlock.
+        if (state.hasProperty(ImprovedSmokerBlock.SMOKE_KIND)) {
+            int wasSmokeKind = state.getValue(ImprovedSmokerBlock.SMOKE_KIND);
+            if (wasLit != isLit || wasSmokeKind != smokeKind) {
+                world.setBlock(pos, state.setValue(ImprovedSmokerBlock.LIT, isLit).setValue(ImprovedSmokerBlock.SMOKE_KIND, smokeKind), 3);
+            }
+        } else if (wasLit != isLit) {
             world.setBlock(pos, state.setValue(ImprovedSmokerBlock.LIT, isLit), 3);
         }
         propertyDelegate.set(3, isLit ? 1 : 0);

@@ -2,7 +2,7 @@
   "parent": "smoker:main/smoke_first_food",
   "display": {
     "icon": {
-      "id": "minecraft:glowstone_dust",
+      "id": "minecraft:clock",
       "count": 1
     },
     "title": {

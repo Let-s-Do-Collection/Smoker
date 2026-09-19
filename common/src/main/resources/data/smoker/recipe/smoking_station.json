@@ -4,6 +4,9 @@
     "S": {
       "item": "minecraft:smoker"
     },
+    "A": {
+      "item": "minecraft:stone_bricks"
+    },
     "P": {
       "tag": "minecraft:planks"
     }
@@ -11,10 +14,10 @@
   "pattern": [
     "PPP",
     "PSP",
-    "PPP"
+    "AAA"
   ],
   "result": {
-    "id": "smoker:improved_smoker",
+    "id": "smoker:smoking_station",
     "count": 1
   }
 }
