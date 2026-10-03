@@ -1,12 +1,14 @@
 package net.satisfy.smoker.core.util;
 
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
-import net.minecraft.network.chat.TextColor;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.ItemStack;
 import net.satisfy.smoker.core.recipe.SmokerModifierRecipe;
 
@@ -15,6 +17,10 @@ import java.util.List;
 import java.util.Objects;
 
 public class SmokerTooltip {
+    private static final int GREEN = 0x90EE90;
+    private static final int RED = 0xFF5555;
+    private static final int BLUE = 0x5599FF;
+
     private static final String SATURATION_KEY = SmokerFoodData.SATURATION_KEY;
     private static final String NUTRITION_KEY = SmokerFoodData.NUTRITION_KEY;
     private static final String HEAL_KEY = SmokerFoodData.HEAL_KEY;
@@ -32,44 +38,40 @@ public class SmokerTooltip {
     }
 
     public static void addSmokerTooltip(ItemStack itemStack, List<Component> tooltip) {
-        if (isSmokerProcessed(itemStack)) {
-            CompoundTag tag = SmokerFoodData.getTag(itemStack);
-            assert tag != null;
+        if (!isSmokerProcessed(itemStack)) return;
+        CompoundTag tag = Objects.requireNonNull(SmokerFoodData.getTag(itemStack));
 
-            boolean perfect = SmokerFoodData.isPerfect(itemStack);
-            double bonusMultiplier = perfect ? SmokerFoodData.PERFECT_BONUS_MULTIPLIER : 1.0;
+        boolean perfect = SmokerFoodData.isPerfect(itemStack);
+        double multiplier = perfect ? SmokerFoodData.PERFECT_BONUS_MULTIPLIER : 1.0;
 
-            tooltip.add(Component.translatable("tooltip.smoker.item.processed").setStyle(Style.EMPTY.withColor(0xD28B46)));
+        tooltip.add(Component.translatable("tooltip.smoker.item.processed").withStyle(Style.EMPTY.withColor(0xD28B46)));
+        if (perfect) {
+            tooltip.add(Component.translatable("tooltip.smoker.item.perfect").withStyle(Style.EMPTY.withColor(0xFFD700)));
+        }
 
-            if (perfect) {
-                tooltip.add(Component.translatable("tooltip.smoker.item.perfect").setStyle(Style.EMPTY.withColor(0xFFD700)));
+        if (tag.getDouble(NUTRITION_KEY) > 0.0) {
+            FoodProperties food = itemStack.get(DataComponents.FOOD);
+            String text;
+            if (food != null && tag.contains(SmokerFoodData.BASE_NUTRITION_KEY)) {
+                text = "+" + (food.nutrition() - tag.getInt(SmokerFoodData.BASE_NUTRITION_KEY));
+            } else {
+                text = formatPercent(tag.getDouble(NUTRITION_KEY) * multiplier);
             }
+            tooltip.add(line("tooltip.smoker.item.nutrition", text, GREEN));
+        }
 
-            if (tag.contains(SATURATION_KEY)) {
-                double saturation = tag.getDouble(SATURATION_KEY) * bonusMultiplier * 100;
-                String saturationText = (saturation % 1 == 0) ? String.format("+%.0f%%", saturation) : String.format("%.1f%%", saturation);
-                tooltip.add(Component.translatable("tooltip.smoker.item.saturation").append(": " + saturationText).setStyle(Style.EMPTY.withColor(0x90EE90)));
-            }
+        if (tag.getDouble(SATURATION_KEY) > 0.0) {
+            tooltip.add(line("tooltip.smoker.item.saturation", formatPercent(tag.getDouble(SATURATION_KEY) * multiplier), GREEN));
+        }
 
-            if (tag.contains(NUTRITION_KEY)) {
-                double nutrition = tag.getDouble(NUTRITION_KEY) * bonusMultiplier * 100;
-                String nutritionText = (nutrition % 1 == 0) ? String.format("+%.0f%%", nutrition) : String.format("%.1f%%", nutrition);
-                tooltip.add(Component.translatable("tooltip.smoker.item.nutrition").append(": " + nutritionText).setStyle(Style.EMPTY.withColor(0x90EE90)));
-            }
+        if (tag.getInt(HEAL_KEY) > 0) {
+            tooltip.add(line("tooltip.smoker.item.heal", formatHearts(tag.getInt(HEAL_KEY)), RED));
+        }
 
-            if (tag.contains(HEAL_KEY)) {
-                int healAmount = tag.getInt(HEAL_KEY);
-                tooltip.add(Component.translatable("tooltip.smoker.item.heal").append(": " + (healAmount / 2) + "❤").setStyle(Style.EMPTY.withColor(0xFF5555)));
-            }
-
-            if (tag.contains(EFFECT_KEY) && tag.contains(EFFECT_DURATION_KEY) && tag.getInt(EFFECT_DURATION_KEY) > 0) {
-                String effectName = tag.getString(EFFECT_KEY);
-                String effectDuration = formatDuration(tag.getInt(EFFECT_DURATION_KEY));
-                MobEffect effect = BuiltInRegistries.MOB_EFFECT.get(ResourceLocation.parse(effectName));
-
-                if (effect != null) {
-                    tooltip.add(Component.translatable("tooltip.smoker.item.effect").append(": " + effect.getDisplayName().getString() + " (" + effectDuration + ")").setStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x5599FF))));
-                }
+        if (tag.contains(EFFECT_KEY) && tag.getInt(EFFECT_DURATION_KEY) > 0) {
+            Component effectLine = formatEffectLine(tag.getString(EFFECT_KEY), tag.getInt(EFFECT_DURATION_KEY));
+            if (effectLine != null) {
+                tooltip.add(effectLine);
             }
         }
     }
@@ -91,26 +93,35 @@ public class SmokerTooltip {
     }
 
     public static Component formatSaturationLine(double saturation) {
-        double pct = saturation * 100;
-        String text = (pct % 1 == 0) ? String.format("+%.0f%%", pct) : String.format("%.1f%%", pct);
-        return Component.translatable("tooltip.smoker.item.saturation").append(": " + text).setStyle(Style.EMPTY.withColor(0x90EE90));
+        return line("tooltip.smoker.item.saturation", formatPercent(saturation), GREEN);
     }
 
     public static Component formatNutritionLine(double nutrition) {
-        double pct = nutrition * 100;
-        String text = (pct % 1 == 0) ? String.format("+%.0f%%", pct) : String.format("%.1f%%", pct);
-        return Component.translatable("tooltip.smoker.item.nutrition").append(": " + text).setStyle(Style.EMPTY.withColor(0x90EE90));
+        return line("tooltip.smoker.item.nutrition", formatPercent(nutrition), GREEN);
     }
 
     public static Component formatHealLine(int healAmount) {
-        return Component.translatable("tooltip.smoker.item.heal").append(": " + (healAmount / 2) + "❤").setStyle(Style.EMPTY.withColor(0xFF5555));
+        return line("tooltip.smoker.item.heal", formatHearts(healAmount), RED);
     }
 
     public static Component formatEffectLine(String effectName, int effectDuration) {
         MobEffect effect = BuiltInRegistries.MOB_EFFECT.get(ResourceLocation.parse(effectName));
         if (effect == null) return null;
-        String duration = formatDuration(effectDuration);
-        return Component.translatable("tooltip.smoker.item.effect").append(": " + effect.getDisplayName().getString() + " (" + duration + ")").setStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x5599FF)));
+        return Component.translatable("tooltip.smoker.item.effect").append(": " + effect.getDisplayName().getString() + " (" + formatDuration(effectDuration) + ")").withStyle(Style.EMPTY.withColor(BLUE));
+    }
+
+    private static MutableComponent line(String labelKey, String value, int color) {
+        return Component.literal(value + " ").append(Component.translatable(labelKey)).withStyle(Style.EMPTY.withColor(color));
+    }
+
+    private static String formatPercent(double fraction) {
+        double pct = fraction * 100;
+        return (pct % 1 == 0) ? String.format("+%.0f%%", pct) : String.format("+%.1f%%", pct);
+    }
+
+    private static String formatHearts(int halfHearts) {
+        double hearts = halfHearts / 2.0;
+        return (hearts % 1 == 0) ? String.format("%.0f \u2764", hearts) : String.format("%.1f \u2764", hearts);
     }
 
     public static MobEffect getEffect(String effectName) {

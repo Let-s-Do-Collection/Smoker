@@ -1,3 +1,14 @@
+[1.0.1]
+
+**Fixed**
+
+* Smoked food now actually restores the bonus nutrition and saturation shown in its tooltip, and other mods such as AppleSkin display the improved values correctly. Perfectly Smoked food applies its larger bonus the same way.
+
+**Changed**
+* Smoked food tooltips are easier to read: the real nutrition gain is shown as a plain number, healing no longer rounds half hearts down to zero, and each line has its own color.
+
+***
+
 [1.0.0]
 
 **Initial Release**

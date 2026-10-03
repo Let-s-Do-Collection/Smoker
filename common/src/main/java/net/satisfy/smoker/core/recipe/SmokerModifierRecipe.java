@@ -65,6 +65,7 @@ public class SmokerModifierRecipe implements Recipe<SmokerRecipeInput> {
             tag.putInt(SmokerFoodData.EFFECT_DURATION_KEY, getEffectDuration());
         }
         SmokerFoodData.applyTag(result, tag);
+        SmokerFoodData.applyFood(result);
 
         return result;
     }

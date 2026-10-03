@@ -218,6 +218,7 @@ public class ImprovedSmokerBlockEntity extends BlockEntity implements Implemente
         tag.putDouble(SmokerFoodData.NUTRITION_KEY, 0.05);
         tag.putBoolean(SmokerFoodData.PROCESSED_KEY, true);
         SmokerFoodData.applyTag(output, tag);
+        SmokerFoodData.applyFood(output);
 
         ItemStack currentOutput = getItem(OUTPUT_SLOT);
         if (currentOutput.isEmpty()) {
@@ -262,6 +263,7 @@ public class ImprovedSmokerBlockEntity extends BlockEntity implements Implemente
         }
         tag.putBoolean(SmokerFoodData.PROCESSED_KEY, true);
         SmokerFoodData.applyTag(output, tag);
+        SmokerFoodData.applyFood(output);
 
         ItemStack currentOutput = getItem(OUTPUT_SLOT);
         if (currentOutput.isEmpty()) {

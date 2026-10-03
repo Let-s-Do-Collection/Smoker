@@ -3,6 +3,7 @@ package net.satisfy.smoker.core.util;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.component.CustomData;
 
 public final class SmokerFoodData {
@@ -12,6 +13,8 @@ public final class SmokerFoodData {
     public static final String EFFECT_KEY = "smoker_effect";
     public static final String EFFECT_DURATION_KEY = "smoker_effect_duration";
     public static final String PROCESSED_KEY = "SmokerProcessed";
+    public static final String BASE_NUTRITION_KEY = "smoker_base_nutrition";
+    public static final String BASE_SATURATION_KEY = "smoker_base_saturation";
     public static final String PERFECT_KEY = "smoker_perfect";
     public static final double PERFECT_BONUS_MULTIPLIER = 1.5;
 
@@ -36,12 +39,40 @@ public final class SmokerFoodData {
             tag.remove(PERFECT_KEY);
         }
         applyTag(stack, tag);
+        applyFood(stack);
 
         if (perfect) {
             stack.set(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true);
         } else {
             stack.remove(DataComponents.ENCHANTMENT_GLINT_OVERRIDE);
         }
+    }
+
+    public static void applyFood(ItemStack stack) {
+        FoodProperties food = stack.get(DataComponents.FOOD);
+        CompoundTag tag = getTag(stack);
+        if (food == null || tag == null) return;
+
+        if (!tag.contains(BASE_NUTRITION_KEY)) {
+            tag.putInt(BASE_NUTRITION_KEY, food.nutrition());
+            tag.putFloat(BASE_SATURATION_KEY, food.saturation());
+            applyTag(stack, tag);
+        }
+
+        int baseNutrition = tag.getInt(BASE_NUTRITION_KEY);
+        float baseSaturation = tag.getFloat(BASE_SATURATION_KEY);
+        double multiplier = tag.getBoolean(PERFECT_KEY) ? PERFECT_BONUS_MULTIPLIER : 1.0;
+
+        double nutritionBonus = tag.getDouble(NUTRITION_KEY) * multiplier;
+        double saturationBonus = tag.getDouble(SATURATION_KEY) * multiplier;
+
+        int nutrition = baseNutrition;
+        if (nutritionBonus > 0.0) {
+            nutrition = Math.max(baseNutrition + 1, (int) Math.round(baseNutrition * (1.0 + nutritionBonus)));
+        }
+        float saturation = (float) (baseSaturation * (1.0 + saturationBonus));
+
+        stack.set(DataComponents.FOOD, new FoodProperties(nutrition, saturation, food.canAlwaysEat(), food.eatSeconds(), food.usingConvertsTo(), food.effects()));
     }
 
     public static CompoundTag getOrCreateTag(ItemStack stack) {
