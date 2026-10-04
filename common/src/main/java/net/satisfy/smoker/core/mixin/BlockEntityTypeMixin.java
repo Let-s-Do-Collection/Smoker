@@ -1,6 +1,5 @@
 package net.satisfy.smoker.core.mixin;
 
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SmokerBlock;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -15,12 +14,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class BlockEntityTypeMixin {
     @Inject(method = "isValid", at = @At("HEAD"), cancellable = true)
     private void improvedSmoker_isValid(BlockState state, CallbackInfoReturnable<Boolean> cir) {
+        if (!(state.getBlock() instanceof SmokerBlock)) return;
         if (!PlatformHelper.isVanillaSmokerReplacementEnabled()) return;
+        if (!CommonRegistry.IMPROVED_SMOKER_ENTITY.isPresent()) return;
         if ((Object)this == CommonRegistry.IMPROVED_SMOKER_ENTITY.get()) {
-            Block block = state.getBlock();
-            if (block instanceof SmokerBlock) {
-                cir.setReturnValue(true);
-            }
+            cir.setReturnValue(true);
         }
     }
 }

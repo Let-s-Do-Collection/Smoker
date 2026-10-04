@@ -1,3 +1,11 @@
+[1.0.2]
+
+**Fixed**
+
+* Fixed a crash on startup ("Registry Object not present: smoker:smoking_station_entity") when playing alongside mods like Create, Flywheel or Sodium.
+
+***
+
 [1.0.1]
 
 **Fixed**
